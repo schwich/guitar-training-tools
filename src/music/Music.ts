@@ -1,3 +1,5 @@
+import { getRandomInt } from 'src/util/Util';
+
 export interface INote {
     chromaticIdx: number,
     enharmonic: boolean,
@@ -69,10 +71,20 @@ export function createNoteSequenceFromIntervalPattern(tonic: string, pattern: st
     return scale
 }
 
-function getNoteChromaticIndex(note: string) {
+export function getNoteChromaticIndex(note: string) {
     return notes.filter( ({label}) => {
         return label.includes(note)
     })[0].chromaticIdx
+}
+
+export function getRandomChromaticNote() {
+    let noteIdx = getRandomInt(0, 12);
+    let randomNote = notes[noteIdx]
+    if (randomNote.enharmonic) {
+        return randomNote.label[getRandomInt(0, 2)]
+    } else {
+        return randomNote.label[0]
+    }
 }
 
 function getChromaticArrIdx(note :string) {

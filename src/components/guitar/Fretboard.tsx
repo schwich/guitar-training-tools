@@ -2,7 +2,8 @@ import * as React from 'react'
 import { createChromaticSequence, standardGuitarTuning } from 'src/music/Music';
 
 export interface Props {
-    shouldDisplayNotes: boolean
+    shouldDisplayNoteNames: boolean
+    handleNoteClicked: (noteClicked: string[]) => void
 }
 
 const NUM_FRETS = 24
@@ -16,13 +17,13 @@ export default class Fretboard extends React.Component<Props, object> {
 
     onNoteClicked = (note?: string[]) => {
         console.log(note)
+        if (note) {
+            this.props.handleNoteClicked(note);
+        }
     }
 
     render() {
-        const {shouldDisplayNotes} = this.props;
-
-        console.log('fretboard render() called');
-        console.log(`shouldDisplayNotes=${shouldDisplayNotes}`)
+        const {shouldDisplayNoteNames} = this.props;
 
         const x = 83;
         const y = 35;
@@ -78,13 +79,12 @@ export default class Fretboard extends React.Component<Props, object> {
                                         stroke: 'black',
                                         strokeWidth: 2
                                     }} />
-                                    {
-                                        shouldDisplayNotes 
-                                            ?
-                                                <StringOfNotes startNote={standardGuitarTuning[i]} length={12} onNoteClicked={this.onNoteClicked} />
-                                            :
-                                                ''
-                                    }
+                                    <StringOfNotes 
+                                        startNote={standardGuitarTuning[i]} 
+                                        length={13} 
+                                        onNoteClicked={this.onNoteClicked} 
+                                        shouldDisplayNames={shouldDisplayNoteNames}
+                                    />
                                 </g>
                     })
                 }
@@ -97,10 +97,11 @@ export default class Fretboard extends React.Component<Props, object> {
 interface StringOfNotesProps {
     startNote: string,
     length: number,
+    shouldDisplayNames: boolean,
     onNoteClicked?: (note?: string[]) => void
 }
 
-function StringOfNotes({startNote, length, onNoteClicked}: StringOfNotesProps) {
+function StringOfNotes({startNote, length, onNoteClicked, shouldDisplayNames}: StringOfNotesProps) {
     const x = 35;
     const y = 5;
 
@@ -118,7 +119,9 @@ function StringOfNotes({startNote, length, onNoteClicked}: StringOfNotesProps) {
                             strokeWidth: 2
                         }} />
                         {
-                            chromaticSequence[i].enharmonic 
+                            shouldDisplayNames 
+                            ? (
+                                chromaticSequence[i].enharmonic 
                                 ? (
                                     <text x="9.5" y="20" fontSize="11">
                                         <tspan x="9.5" dy="-6">{chromaticSequence[i].label[0]}</tspan>
@@ -132,6 +135,10 @@ function StringOfNotes({startNote, length, onNoteClicked}: StringOfNotesProps) {
                                         </tspan>
                                     </text>
                                 )
+                            )
+                            : (
+                                ''
+                            )
                         }
                     </g>
                 )

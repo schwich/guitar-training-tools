@@ -1,0 +1,14 @@
+#mainContainer {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    margin: 10px;
+}
+
+#gameDisplaysContainer {
+    display: flex;
+    flex-direction: row;
+    padding: 5px;
+    border: 1px solid black;
+    justify-content: space-between;
+}
