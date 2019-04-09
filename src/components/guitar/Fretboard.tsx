@@ -2,11 +2,11 @@ import * as React from 'react'
 import { createChromaticSequence, standardGuitarTuning } from 'src/music/Music';
 
 export interface Props {
+    numFrets: number,
     shouldDisplayNoteNames: boolean
     handleNoteClicked: (noteClicked: string[]) => void
 }
 
-const NUM_FRETS = 24
 const NUM_STRINGS = 6
 
 export default class Fretboard extends React.Component<Props, object> {
@@ -16,14 +16,13 @@ export default class Fretboard extends React.Component<Props, object> {
     }
 
     onNoteClicked = (note?: string[]) => {
-        console.log(note)
         if (note) {
             this.props.handleNoteClicked(note);
         }
     }
 
     render() {
-        const {shouldDisplayNoteNames} = this.props;
+        const {shouldDisplayNoteNames, numFrets} = this.props;
 
         const x = 83;
         const y = 35;
@@ -32,7 +31,7 @@ export default class Fretboard extends React.Component<Props, object> {
         const r = 10;
 
         return (
-            <svg width="1500" height="300" style={{border: '1px solid black'}}>
+            <svg width="1200" height="300">
                 <g>
                     <rect x={x} y={y} width="5" height="210" style={{
                         stroke: 'gray',
@@ -41,7 +40,7 @@ export default class Fretboard extends React.Component<Props, object> {
                     }} />
                 {
                     // frets
-                    (Array.from(Array(NUM_FRETS).keys())).map((_, i) => {
+                    (Array.from(Array(numFrets).keys())).map((_, i) => {
                         return <rect key={i} x={x + (70 * (i+1))} y={y} width="5" height="210" style={{
                             stroke: 'gray',
                             fill: 'white',
@@ -75,13 +74,13 @@ export default class Fretboard extends React.Component<Props, object> {
                     // strings
                     (Array.from(Array(NUM_STRINGS).keys())).map((_, i) => {
                         return <g key={i} transform={`translate(0, ${20 + ((i)*40)})`}>
-                                    <line x1="90" y1="20" x2="1160" y2="20" style={{
+                                    <line x1="90" y1="20" x2={72*(numFrets+1)} y2="20" style={{ //x2=1160
                                         stroke: 'black',
                                         strokeWidth: 2
                                     }} />
                                     <StringOfNotes 
                                         startNote={standardGuitarTuning[i]} 
-                                        length={13} 
+                                        length={numFrets + 1} // account for the unfretted string note 
                                         onNoteClicked={this.onNoteClicked} 
                                         shouldDisplayNames={shouldDisplayNoteNames}
                                     />
@@ -137,7 +136,7 @@ function StringOfNotes({startNote, length, onNoteClicked, shouldDisplayNames}: S
                                 )
                             )
                             : (
-                                ''
+                                '' // don't display note names, return empty string
                             )
                         }
                     </g>

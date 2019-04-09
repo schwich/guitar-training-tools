@@ -7,6 +7,10 @@ export interface INote {
     color?: string
 }
 
+export interface INoteSPN extends INote {
+    octaveNum: number
+}
+
 export const notes: INote[] = [
     {chromaticIdx: 1, enharmonic: false, label: ['A'], color: 'green'},
     {chromaticIdx: 2, enharmonic: true, label: ['A♯', 'B♭']},
@@ -22,15 +26,52 @@ export const notes: INote[] = [
     {chromaticIdx: 12, enharmonic: true, label: ['G♯', 'A♭']},
 ]
 
+/**
+ * The strings of the guitar (in standard tuning) represented in 
+ * SPN = Scientific Pitch Notation
+ */
+export const standardGuitarTuningSPN = [
+    'E4', 'B3', 'G3', 'D3', 'A2', 'E2'
+]
+
 export const standardGuitarTuning = [
     'E', 'B', 'G', 'D', 'A', 'E'
 ]
 
-export function createChromaticSequence(startNote: string, length: number) {
+/**
+ * 
+ */
+export function createChromaticSequenceSPN(startNote: string, startOctaveNum: number, length: number): INoteSPN[] {
+    let nextIdx = getChromaticArrIdx(startNote);
+    let notesIncluded = []
+    let octaveNum = startOctaveNum;
+    for (let i = 0; i < length; i++) {
+        
+        // make sure to create a new object
+        let n = {
+            ...notes[nextIdx],
+            octaveNum
+        }
+        
+        notesIncluded.push(n);
+
+        // need to increment the octave number because we reached the end of the chromatic scale
+        if (n.chromaticIdx === 12) {
+            octaveNum++;
+        }
+
+        nextIdx = (nextIdx + 1) % 12;
+    }
+
+    return notesIncluded;
+}
+
+export function createChromaticSequence(startNote: string, length: number): INote[] {
     let nextIdx = getChromaticArrIdx(startNote);
     let notesIncluded = []
     for (let i = 0; i < length; i++) {
-        notesIncluded.push(notes[nextIdx])
+        let n = { ...notes[nextIdx] } // new object
+        notesIncluded.push(n)
         nextIdx = (nextIdx + 1) % 12;
     }
 

@@ -1,5 +1,7 @@
 import * as React from 'react'
 
+import Snackbar from '@material-ui/core/Snackbar'
+
 import './GameDisplay.css'
 import { convertFractionToPercentage } from 'src/util/Util';
 
@@ -11,10 +13,22 @@ export interface Props {
     statusMsg: string
 }
 
-export default class GameDisplay extends React.Component<Props, object> {
+export interface State {
+    gameMessageOpen: boolean
+}
+
+export default class GameDisplay extends React.Component<Props, State> {
 
     constructor(props: Props) {
         super(props)
+
+        this.state = {
+            gameMessageOpen: false
+        }
+    }
+
+    handleSnackbarClose = () => {
+        this.setState({ gameMessageOpen: false });
     }
 
     render() {
@@ -36,6 +50,11 @@ export default class GameDisplay extends React.Component<Props, object> {
                 <div id="gameInstructionContainer">
                     <GameInstructions instructionText={instructionText} />
                 </div>
+
+                <Snackbar
+                    anchorOrigin={{ vertical: 'top', horizontal: 'center'}}
+                    open={this.state.gameMessageOpen}
+                    onClose={this.handleSnackbarClose} />
             </div>
         )
     }

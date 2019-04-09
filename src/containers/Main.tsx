@@ -7,11 +7,14 @@ import './Main.css'
 import GameControlPanel from 'src/components/game/GameControlPanel';
 import GameController, { IGameQuestion } from 'src/game/GameController';
 
+import { createChromaticSequenceSPN } from 'src/music/Music'
+
 export interface Props {
 
 }
 
 export interface State {
+    numFrets: number,
     shouldShowNoteNames: boolean,
     gameRunning: boolean,
     time: number,
@@ -32,6 +35,7 @@ export default class Main extends React.Component<Props, State> {
 
         this.state = {
             shouldShowNoteNames: true,
+            numFrets: 12,
             gameRunning: false,
             time: 0,
             totalGuesses: 0,
@@ -48,8 +52,6 @@ export default class Main extends React.Component<Props, State> {
                 time: prevState.time + 1
             }))
         }, 1000)
-
-       
 
         if (this.gameController) {
             this.gameController.startNewGame();
@@ -77,7 +79,14 @@ export default class Main extends React.Component<Props, State> {
         clearInterval(this.timer);
     }
 
+    handleNumFretsChanged = (numFrets: number) => {
+        console.log(`handleNumFretsChanged in Main called with numFrets=${numFrets}`)
+        this.setState({ numFrets })
+    }
+
     handleNoteClicked = (noteClicked: string[]) => {
+        if (!this.state.gameRunning) return; // don't do anything if the game isn't running
+
         if (this.gameController) {
             let isCorrect = this.gameController.checkAnswer(noteClicked); // update game state
 
@@ -115,6 +124,9 @@ export default class Main extends React.Component<Props, State> {
 
     componentDidMount() {
         this.gameController = new GameController();
+
+        let seq = (createChromaticSequenceSPN('E', 4, 25))
+        console.log(seq)
     }
 
     render() {
@@ -124,7 +136,8 @@ export default class Main extends React.Component<Props, State> {
             time,
             nextGameStatusMsg,
             gameInstructionTxt,
-            gameRunning
+            gameRunning,
+            numFrets
         } = this.state;
 
         return (
@@ -138,12 +151,17 @@ export default class Main extends React.Component<Props, State> {
                         instructionText={gameInstructionTxt}
                     />
                     <GameControlPanel 
+                        handleNumFretsChanged={this.handleNumFretsChanged}
                         isGameRunning={gameRunning}
                         startBtnClicked={this.handleStartGameBtn}
                         endBtnClicked={this.handleEndGameBtn} />
                 </div>
                 
-                <Fretboard shouldDisplayNoteNames={this.state.shouldShowNoteNames} handleNoteClicked={this.handleNoteClicked} />
+                <Fretboard 
+                    numFrets={numFrets}
+                    shouldDisplayNoteNames={this.state.shouldShowNoteNames} 
+                    handleNoteClicked={this.handleNoteClicked} 
+                />
             </div>
         )
     }

@@ -47,10 +47,6 @@ export default class GameController {
     public checkAnswer(submittedAnswer: string[]): boolean {
         this.totalGuesses++;
 
-        console.log('in checkAnswer()');
-        console.log(`currentAnswer=${this.currentAnswer}`)
-        console.log(`submittedAnswer=${submittedAnswer}`);
-
         if (submittedAnswer.includes(this.currentAnswer)) {
             this.numCorrect++;
             return true;
