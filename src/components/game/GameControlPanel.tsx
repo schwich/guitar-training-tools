@@ -3,8 +3,6 @@ import * as React from 'react'
 import Button from '@material-ui/core/Button'
 import { Paper, ListItemText, MenuItem, Checkbox, FormControl, InputLabel, Select, Input } from '@material-ui/core'
 
-import './GameControlPanel.css'
-
 export interface Props {
     isGameRunning: boolean;
     startBtnClicked: () => void,
@@ -94,7 +92,7 @@ export default class GameControlPanel extends React.Component<Props, State> {
                 <div id="gameControlPanelContainer" style={{
                     display: 'flex', flexDirection: 'column', maxWidth: 500, 
                     justifyContent: 'space-between', 
-                    minHeight: 200, margin: 15
+                    padding: 15, height: '100%'
                 }}>
 
                     <div id="gameControlPanelNumFretsControl">

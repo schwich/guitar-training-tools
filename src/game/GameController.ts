@@ -13,6 +13,11 @@ export interface IGameQuestion {
     answer: string
 }
 
+export interface IGameAnswerResponse {
+    answerCorrect: boolean,
+    optSecondaryTxt?: string
+}
+
 export default class GameController {
 
     private currentAnswer: string;
@@ -46,15 +51,37 @@ export default class GameController {
         }
     }
 
-    public checkAnswer(stringNum: number, submittedAnswer: string[]): boolean {
+    public checkAnswer(stringNum: number, submittedAnswer: string[]): IGameAnswerResponse {
         this.totalGuesses++;
 
-        if (submittedAnswer.includes(this.currentAnswer) && this.stringsEnabled.includes(stringNum)) {
-            this.numCorrect++;
-            return true;
+        if (this.stringsEnabled.includes(stringNum)) {
+
+            if (submittedAnswer.includes(this.currentAnswer)) {
+                return { answerCorrect: true}
+            } else {
+                return { answerCorrect: false }
+            }
+
         } else {
-            return false;
+            return {
+                answerCorrect: false,
+                optSecondaryTxt: 'Wrong String! Try again.'
+            }
         }
+
+        // if (submittedAnswer.includes(this.currentAnswer)) {
+        //     this.numCorrect++;
+        //     if (this.stringsEnabled.includes(stringNum)) {
+        //         return { answerCorrect: true };
+        //     } else {
+        //         return {
+        //             answerCorrect: false,
+        //             optSecondaryTxt: 'Wrong String! Try again.'
+        //         }
+        //     }    
+        // } else {
+        //     return { answerCorrect: false }
+        // }
     }
 
     public setStringsEnabled(stringsEnabled: number[]) {

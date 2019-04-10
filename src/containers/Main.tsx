@@ -20,6 +20,7 @@ export interface State {
     totalGuesses: number,
     numCorrect: number,
     nextGameStatusMsg: string,
+    optSecondaryGameStatusMsg: string,
     gameInstructionTxt: string,
 }
 
@@ -40,6 +41,7 @@ export default class Main extends React.Component<Props, State> {
             totalGuesses: 0,
             numCorrect: 0,
             nextGameStatusMsg: '',
+            optSecondaryGameStatusMsg: '',
             gameInstructionTxt: '',
         };
     }
@@ -60,6 +62,8 @@ export default class Main extends React.Component<Props, State> {
                 gameRunning: true,
                 shouldShowNoteNames: false,
                 gameInstructionTxt: this.currentGameQuestion.instructionTxt,
+                nextGameStatusMsg: '',
+                optSecondaryGameStatusMsg: ''
             })
         } else {
             throw new Error('Game cannot be started');
@@ -71,6 +75,7 @@ export default class Main extends React.Component<Props, State> {
             gameRunning: false, 
             time: 0,
             gameInstructionTxt: '',
+            nextGameStatusMsg: '',
             shouldShowNoteNames: true
         })
 
@@ -93,15 +98,16 @@ export default class Main extends React.Component<Props, State> {
         if (!this.state.gameRunning) return; // don't do anything if the game isn't running
 
         if (this.gameController) {
-            let isCorrect = this.gameController.checkAnswer(stringNum, noteClicked); // update game state
+            let answerResponse = this.gameController.checkAnswer(stringNum, noteClicked); // update game state
 
             // display the score
             let score = this.gameController.getGameScore(); 
-            if (isCorrect) {
+            if (answerResponse.answerCorrect) {
                 this.setState({
                     numCorrect: score.numCorrectAnswers,
                     totalGuesses: score.numTotalGuesses,
-                    nextGameStatusMsg: 'Correct!'
+                    nextGameStatusMsg: 'Correct!',
+                    optSecondaryGameStatusMsg: ''
                 })
 
                 // was correct, so ask next question
@@ -119,12 +125,20 @@ export default class Main extends React.Component<Props, State> {
                 this.setState({
                     numCorrect: score.numCorrectAnswers,
                     totalGuesses: score.numTotalGuesses,
-                    nextGameStatusMsg: 'Wrong!'
+                    nextGameStatusMsg: 'Wrong!',
+                    optSecondaryGameStatusMsg: answerResponse.optSecondaryTxt || ''
                 })
 
                 // wasn't correct, so try again
             }
         }
+    }
+
+    handleClearScore = () => {
+        this.setState({
+            numCorrect: 0,
+            totalGuesses: 0
+        })
     }
 
     componentDidMount() {
@@ -139,7 +153,8 @@ export default class Main extends React.Component<Props, State> {
             nextGameStatusMsg,
             gameInstructionTxt,
             gameRunning,
-            numFrets
+            numFrets,
+            optSecondaryGameStatusMsg
         } = this.state;
 
         return (
@@ -151,8 +166,7 @@ export default class Main extends React.Component<Props, State> {
                         numCorrectAnswers={numCorrect}
                         totalGuesses={totalGuesses}
                         time={time}
-                        statusMsg={nextGameStatusMsg}
-                        instructionText={gameInstructionTxt}
+                        handleClearScore={this.handleClearScore}
                     />
 
                     <GameControlPanel 
@@ -167,6 +181,7 @@ export default class Main extends React.Component<Props, State> {
                         isGameRunning={gameRunning}
                         gameStatusMsg={nextGameStatusMsg}
                         gameInstruction={gameInstructionTxt}
+                        optSecondaryMsg={optSecondaryGameStatusMsg}
                     />
                 </div>
                 
