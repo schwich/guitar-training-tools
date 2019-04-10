@@ -1,9 +1,8 @@
 import * as React from 'react'
 
-import Snackbar from '@material-ui/core/Snackbar'
-
 import './GameDisplay.css'
 import { convertFractionToPercentage } from 'src/util/Util';
+import { Paper } from '@material-ui/core';
 
 export interface Props {
     numCorrectAnswers: number,
@@ -41,21 +40,24 @@ export default class GameDisplay extends React.Component<Props, State> {
         } = this.props;
 
         return (
-            <div id="gameDisplayContainer">
-                <div id="statusInfoContainer">
-                    <GameScore totalGuesses={totalGuesses} numCorrect={numCorrectAnswers} />
-                    <GameStatusMessage msg={statusMsg} />
-                    <GameTimer time={time} />
+            <Paper elevation={1} style={{ maxWidth: 400, marginLeft: 10 }}>
+                <div id="gameDisplayContainer">
+                    <div id="statusInfoContainer" style={{}}>
+                        <GameScore totalGuesses={totalGuesses} numCorrect={numCorrectAnswers} />
+                        <GameTimer time={time} />
+                    </div>
+                    <div style={{
+                            display: 'flex', flexDirection: 'row', justifyContent: 'space-between',
+                            minHeight: 85, minWidth: 200, 
+                            paddingTop: 5, paddingBottom: 5, paddingRight: 15, paddingLeft: 15
+                        }} 
+                        id="gameInstructionContainer"
+                    >
+                        <GameInstructions instructionText={instructionText} />
+                        <GameStatusMessage msg={statusMsg} />
+                    </div>
                 </div>
-                <div id="gameInstructionContainer">
-                    <GameInstructions instructionText={instructionText} />
-                </div>
-
-                <Snackbar
-                    anchorOrigin={{ vertical: 'top', horizontal: 'center'}}
-                    open={this.state.gameMessageOpen}
-                    onClose={this.handleSnackbarClose} />
-            </div>
+            </Paper>
         )
     }
 }
@@ -66,9 +68,14 @@ interface GameScoreProps {
 }
 
 function GameScore({numCorrect, totalGuesses}: GameScoreProps) {
+    
+    let percentage = convertFractionToPercentage(numCorrect, totalGuesses);
+    if (Number.isNaN(percentage)) percentage = 0; 
+
     return (
         <div id="gameScore">
-            <h3>Score: {numCorrect}/{totalGuesses} {convertFractionToPercentage(numCorrect, totalGuesses)}%</h3>
+            <h3>Score: {numCorrect}/{totalGuesses}</h3>
+            <h3>{percentage}%</h3>
         </div>
     )
 }
@@ -78,8 +85,6 @@ interface GameTimerProps {
 }
 
 function GameTimer({time}: GameTimerProps) {
-
-    // convert time to human readable format
 
     return (
         <div id="gameTimer">

@@ -6,6 +6,7 @@ import GameDisplay from '../components/game/GameDisplay'
 import './Main.css'
 import GameControlPanel from 'src/components/game/GameControlPanel';
 import GameController, { IGameQuestion } from 'src/game/GameController';
+import GameInfoPanel from 'src/components/game/GameInfoPanel';
 
 export interface Props {
 
@@ -20,7 +21,6 @@ export interface State {
     numCorrect: number,
     nextGameStatusMsg: string,
     gameInstructionTxt: string,
-    // stringsSelected: number[]
 }
 
 export default class Main extends React.Component<Props, State> {
@@ -41,7 +41,6 @@ export default class Main extends React.Component<Props, State> {
             numCorrect: 0,
             nextGameStatusMsg: '',
             gameInstructionTxt: '',
-            // stringsSelected: [1, 2, 3, 4, 5, 6]
         };
     }
 
@@ -88,14 +87,10 @@ export default class Main extends React.Component<Props, State> {
         if (this.gameController) {
             this.gameController.setStringsEnabled(stringsSelected);
         }
-        // console.log(stringsSelected);
-        // this.setState({ stringsSelected });
     }
 
     handleNoteClicked = (stringNum: number, noteClicked: string[]) => {
         if (!this.state.gameRunning) return; // don't do anything if the game isn't running
-
-        console.log(`stringNum=${stringNum}`)
 
         if (this.gameController) {
             let isCorrect = this.gameController.checkAnswer(stringNum, noteClicked); // update game state
@@ -150,14 +145,30 @@ export default class Main extends React.Component<Props, State> {
         return (
             <div id="mainContainer">
                 
-                <GameDisplay 
-                    numCorrectAnswers={numCorrect}
-                    totalGuesses={totalGuesses}
-                    time={time}
-                    statusMsg={nextGameStatusMsg}
-                    instructionText={gameInstructionTxt}
-                />
-                    
+                <div style={{display: 'flex'}}>
+                
+                    <GameDisplay 
+                        numCorrectAnswers={numCorrect}
+                        totalGuesses={totalGuesses}
+                        time={time}
+                        statusMsg={nextGameStatusMsg}
+                        instructionText={gameInstructionTxt}
+                    />
+
+                    <GameControlPanel 
+                        handleNumFretsChanged={this.handleNumFretsChanged}
+                        handleStringsSelected={this.handleStringsSelected}
+                        isGameRunning={gameRunning}
+                        startBtnClicked={this.handleStartGameBtn}
+                        endBtnClicked={this.handleEndGameBtn} 
+                    />
+
+                    <GameInfoPanel 
+                        isGameRunning={gameRunning}
+                        gameStatusMsg={nextGameStatusMsg}
+                        gameInstruction={gameInstructionTxt}
+                    />
+                </div>
                 
                 <Fretboard 
                     numFrets={numFrets}
@@ -165,13 +176,6 @@ export default class Main extends React.Component<Props, State> {
                     handleNoteClicked={this.handleNoteClicked} 
                 />
 
-                <GameControlPanel 
-                    handleNumFretsChanged={this.handleNumFretsChanged}
-                    handleStringsSelected={this.handleStringsSelected}
-                    isGameRunning={gameRunning}
-                    startBtnClicked={this.handleStartGameBtn}
-                    endBtnClicked={this.handleEndGameBtn} 
-                />
             </div>
         )
     }

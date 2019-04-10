@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { AppBar, Toolbar, Typography } from '@material-ui/core'
+import { AppBar, Toolbar, Typography, IconButton } from '@material-ui/core'
+import MenuIcon  from '@material-ui/icons/Menu'
 import './App.css';
 
 import CssBaseline from '@material-ui/core/CssBaseline'
@@ -15,6 +16,9 @@ class App extends React.Component {
 
         <AppBar position="static">
           <Toolbar>
+            <IconButton color="inherit">
+              <MenuIcon />
+            </IconButton>
             <Typography variant="h6" color="inherit">
               Guitar Fretboard Trainer
             </Typography>
