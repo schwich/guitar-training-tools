@@ -4,7 +4,7 @@ import { createChromaticSequence, standardGuitarTuning } from 'src/music/Music';
 export interface Props {
     numFrets: number,
     shouldDisplayNoteNames: boolean
-    handleNoteClicked: (noteClicked: string[]) => void
+    handleNoteClicked: (stringNum:number, noteClicked: string[]) => void
 }
 
 const NUM_STRINGS = 6
@@ -15,9 +15,9 @@ export default class Fretboard extends React.Component<Props, object> {
         super(props)
     }
 
-    onNoteClicked = (note?: string[]) => {
+    onNoteClicked = (stringNum: number, note?: string[]) => {
         if (note) {
-            this.props.handleNoteClicked(note);
+            this.props.handleNoteClicked(stringNum, note);
         }
     }
 
@@ -79,6 +79,7 @@ export default class Fretboard extends React.Component<Props, object> {
                                         strokeWidth: 2
                                     }} />
                                     <StringOfNotes 
+                                        stringNum={i + 1} // zero-based index to string number (1-6)
                                         startNote={standardGuitarTuning[i]} 
                                         length={numFrets + 1} // account for the unfretted string note 
                                         onNoteClicked={this.onNoteClicked} 
@@ -94,13 +95,14 @@ export default class Fretboard extends React.Component<Props, object> {
 }
 
 interface StringOfNotesProps {
+    stringNum: number,
     startNote: string,
     length: number,
     shouldDisplayNames: boolean,
-    onNoteClicked?: (note?: string[]) => void
+    onNoteClicked?: (stringNum: number, note?: string[]) => void
 }
 
-function StringOfNotes({startNote, length, onNoteClicked, shouldDisplayNames}: StringOfNotesProps) {
+function StringOfNotes({stringNum, startNote, length, onNoteClicked, shouldDisplayNames}: StringOfNotesProps) {
     const x = 35;
     const y = 5;
 
@@ -111,7 +113,7 @@ function StringOfNotes({startNote, length, onNoteClicked, shouldDisplayNames}: S
         {
             (Array.from(Array(length).keys())).map((_, i) => {
                 return (
-                    <g key={i} transform={`translate(${x + (70 * i)}, ${y})`} onClick={() => {onNoteClicked && onNoteClicked(chromaticSequence[i].label)}}>
+                    <g key={i} transform={`translate(${x + (70 * i)}, ${y})`} onClick={() => {onNoteClicked && onNoteClicked(stringNum, chromaticSequence[i].label)}}>
                         <circle cx="15" cy="15" r="15" style={{
                             fill: 'white',
                             stroke: 'gray',

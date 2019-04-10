@@ -3,11 +3,14 @@ import * as React from 'react'
 import Button from '@material-ui/core/Button'
 import { List, ListItem, ListItemText, MenuItem, Menu, Checkbox } from '@material-ui/core'
 
+import './GameControlPanel.css'
+
 export interface Props {
     isGameRunning: boolean;
     startBtnClicked: () => void,
     endBtnClicked: () => void,
-    handleNumFretsChanged: (numFrets: number) => void
+    handleNumFretsChanged: (numFrets: number) => void,
+    handleStringsSelected: (stringsSelected: number[]) => void
 }
 
 export interface State {
@@ -40,7 +43,7 @@ export default class GameControlPanel extends React.Component<Props, State> {
             anchorElem: null,
             selectedIdx: 0,
             numFretsChosen: 12,
-            stringsEnabled: []
+            stringsEnabled: [0, 1, 2, 3, 4, 5] // array indexes
         }
     }
 
@@ -58,7 +61,19 @@ export default class GameControlPanel extends React.Component<Props, State> {
     }
 
     handleStringToggle = (idx: number) => {
-        // const { checked } = this.state;
+        const { stringsEnabled } = this.state;
+        const currentIdx = stringsEnabled.indexOf(idx);
+        const newStringsEnabled = [...stringsEnabled];
+
+        if (currentIdx === -1) {
+            newStringsEnabled.push(idx); 
+        } else {
+            newStringsEnabled.splice(currentIdx, 1);
+        }
+
+        this.setState({ stringsEnabled: newStringsEnabled });
+        let stringNumsEnabled = newStringsEnabled.map(idx => idx + 1);
+        this.props.handleStringsSelected(stringNumsEnabled);
     }
 
     render() {
@@ -99,9 +114,9 @@ export default class GameControlPanel extends React.Component<Props, State> {
                     </Menu>
                 </div>
                 <div id="gameControlPanelStringsToGuessControl">
-                    <List>
+                    <List dense>
                     {
-                        this.guitarStrings.map((string, idx) => (
+                        this.guitarStrings.map((_, idx) => (
                             <ListItem 
                                 key={idx}
                                 button
@@ -109,10 +124,11 @@ export default class GameControlPanel extends React.Component<Props, State> {
                                 onClick={() => this.handleStringToggle(idx)}>
 
                                 <Checkbox
+                                    checked={this.state.stringsEnabled.indexOf(idx) !== -1}
                                     tabIndex={-1}
                                     disableRipple 
                                 />
-                                <ListItemText />
+                                <ListItemText primary={`${this.guitarStrings[idx].number} - ${this.guitarStrings[idx].name}`} />
                             </ListItem>
                         ))
                     }

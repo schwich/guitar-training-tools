@@ -7,8 +7,6 @@ import './Main.css'
 import GameControlPanel from 'src/components/game/GameControlPanel';
 import GameController, { IGameQuestion } from 'src/game/GameController';
 
-import { createChromaticSequenceSPN } from 'src/music/Music'
-
 export interface Props {
 
 }
@@ -21,7 +19,8 @@ export interface State {
     totalGuesses: number,
     numCorrect: number,
     nextGameStatusMsg: string,
-    gameInstructionTxt: string
+    gameInstructionTxt: string,
+    // stringsSelected: number[]
 }
 
 export default class Main extends React.Component<Props, State> {
@@ -41,7 +40,8 @@ export default class Main extends React.Component<Props, State> {
             totalGuesses: 0,
             numCorrect: 0,
             nextGameStatusMsg: '',
-            gameInstructionTxt: ''
+            gameInstructionTxt: '',
+            // stringsSelected: [1, 2, 3, 4, 5, 6]
         };
     }
 
@@ -80,15 +80,25 @@ export default class Main extends React.Component<Props, State> {
     }
 
     handleNumFretsChanged = (numFrets: number) => {
-        console.log(`handleNumFretsChanged in Main called with numFrets=${numFrets}`)
         this.setState({ numFrets })
     }
+    
+    handleStringsSelected = (stringsSelected: number[]) => {
+        stringsSelected.sort((first, second) => first - second);
+        if (this.gameController) {
+            this.gameController.setStringsEnabled(stringsSelected);
+        }
+        // console.log(stringsSelected);
+        // this.setState({ stringsSelected });
+    }
 
-    handleNoteClicked = (noteClicked: string[]) => {
+    handleNoteClicked = (stringNum: number, noteClicked: string[]) => {
         if (!this.state.gameRunning) return; // don't do anything if the game isn't running
 
+        console.log(`stringNum=${stringNum}`)
+
         if (this.gameController) {
-            let isCorrect = this.gameController.checkAnswer(noteClicked); // update game state
+            let isCorrect = this.gameController.checkAnswer(stringNum, noteClicked); // update game state
 
             // display the score
             let score = this.gameController.getGameScore(); 
@@ -124,9 +134,6 @@ export default class Main extends React.Component<Props, State> {
 
     componentDidMount() {
         this.gameController = new GameController();
-
-        let seq = (createChromaticSequenceSPN('E', 4, 25))
-        console.log(seq)
     }
 
     render() {
@@ -142,25 +149,28 @@ export default class Main extends React.Component<Props, State> {
 
         return (
             <div id="mainContainer">
-                <div id="gameDisplaysContainer">
-                    <GameDisplay 
-                        numCorrectAnswers={numCorrect}
-                        totalGuesses={totalGuesses}
-                        time={time}
-                        statusMsg={nextGameStatusMsg}
-                        instructionText={gameInstructionTxt}
-                    />
-                    <GameControlPanel 
-                        handleNumFretsChanged={this.handleNumFretsChanged}
-                        isGameRunning={gameRunning}
-                        startBtnClicked={this.handleStartGameBtn}
-                        endBtnClicked={this.handleEndGameBtn} />
-                </div>
+                
+                <GameDisplay 
+                    numCorrectAnswers={numCorrect}
+                    totalGuesses={totalGuesses}
+                    time={time}
+                    statusMsg={nextGameStatusMsg}
+                    instructionText={gameInstructionTxt}
+                />
+                    
                 
                 <Fretboard 
                     numFrets={numFrets}
                     shouldDisplayNoteNames={this.state.shouldShowNoteNames} 
                     handleNoteClicked={this.handleNoteClicked} 
+                />
+
+                <GameControlPanel 
+                    handleNumFretsChanged={this.handleNumFretsChanged}
+                    handleStringsSelected={this.handleStringsSelected}
+                    isGameRunning={gameRunning}
+                    startBtnClicked={this.handleStartGameBtn}
+                    endBtnClicked={this.handleEndGameBtn} 
                 />
             </div>
         )

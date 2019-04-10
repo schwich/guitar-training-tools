@@ -19,10 +19,12 @@ export default class GameController {
     private numCorrect: number;
     private totalGuesses: number;
     private lastRandomNote: string;
+    private stringsEnabled: number[];
 
     constructor() {
         this.currentAnswer = '';
         this.lastRandomNote = '';
+        this.stringsEnabled = [1, 2, 3, 4, 5, 6];
     }
 
     public startNewGame(): void {
@@ -44,15 +46,19 @@ export default class GameController {
         }
     }
 
-    public checkAnswer(submittedAnswer: string[]): boolean {
+    public checkAnswer(stringNum: number, submittedAnswer: string[]): boolean {
         this.totalGuesses++;
 
-        if (submittedAnswer.includes(this.currentAnswer)) {
+        if (submittedAnswer.includes(this.currentAnswer) && this.stringsEnabled.includes(stringNum)) {
             this.numCorrect++;
             return true;
         } else {
             return false;
         }
+    }
+
+    public setStringsEnabled(stringsEnabled: number[]) {
+        this.stringsEnabled = stringsEnabled;
     }
 
     public getGameScore(): IGameScore {
