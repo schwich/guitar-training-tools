@@ -36,13 +36,15 @@ export default class GameInfoPanel extends React.Component<Props, object> {
                     <div style={{display: 'flex', flexDirection: 'column', height: '100%', 
                         alignItems: 'center', justifyContent: 'space-around'
                     }}>
-                        <div style={{minHeight: '50%'}}><h2>{gameInstruction}</h2></div>
-                        <Fade in={Boolean(gameStatusMsg)} timeout={2000} >
-                            <GameStatusMessage 
-                            statusColor={statusColor}
-                            gameStatusMsg={gameStatusMsg} 
-                            optSecondaryMsg={optSecondaryMsg} />
-                        </Fade>
+                        <div style={{minHeight: '50%', maxHeight: '50%'}}><h2>{gameInstruction}</h2></div>
+                        <div style={{minHeight: '50%', maxHeight: '50%'}}>
+                            <Fade in={Boolean(gameStatusMsg)} timeout={2000} >
+                                <GameStatusMessage 
+                                statusColor={statusColor}
+                                gameStatusMsg={gameStatusMsg} 
+                                optSecondaryMsg={optSecondaryMsg} />
+                            </Fade>
+                        </div>
                     </div>
                 </Paper>
             )

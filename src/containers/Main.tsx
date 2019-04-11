@@ -185,12 +185,13 @@ export default class Main extends React.Component<Props, State> {
                     />
                 </div>
                 
-                <Fretboard 
-                    numFrets={numFrets}
-                    shouldDisplayNoteNames={this.state.shouldShowNoteNames} 
-                    handleNoteClicked={this.handleNoteClicked} 
-                />
-
+                <div style={{marginTop: 20}}>
+                    <Fretboard 
+                        numFrets={numFrets}
+                        shouldDisplayNoteNames={this.state.shouldShowNoteNames} 
+                        handleNoteClicked={this.handleNoteClicked} 
+                    />
+                </div>
             </div>
         )
     }

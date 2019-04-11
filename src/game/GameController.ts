@@ -1,7 +1,6 @@
 import { getRandomChromaticNote } from 'src/music/Music';
 import { convertFractionToPercentage } from 'src/util/Util';
 
-
 export interface IGameScore {
     numCorrectAnswers: number,
     numTotalGuesses: number,
@@ -57,6 +56,7 @@ export default class GameController {
         if (this.stringsEnabled.includes(stringNum)) {
 
             if (submittedAnswer.includes(this.currentAnswer)) {
+                this.numCorrect++;
                 return { answerCorrect: true}
             } else {
                 return { answerCorrect: false }
@@ -68,20 +68,6 @@ export default class GameController {
                 optSecondaryTxt: 'Wrong String! Try again.'
             }
         }
-
-        // if (submittedAnswer.includes(this.currentAnswer)) {
-        //     this.numCorrect++;
-        //     if (this.stringsEnabled.includes(stringNum)) {
-        //         return { answerCorrect: true };
-        //     } else {
-        //         return {
-        //             answerCorrect: false,
-        //             optSecondaryTxt: 'Wrong String! Try again.'
-        //         }
-        //     }    
-        // } else {
-        //     return { answerCorrect: false }
-        // }
     }
 
     public setStringsEnabled(stringsEnabled: number[]) {
