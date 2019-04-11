@@ -1,13 +1,24 @@
 import * as React from 'react'
-import { createChromaticSequence, standardGuitarTuning } from 'src/music/Music';
+import { createChromaticSequence } from 'src/music/Music';
+import Fingering from './Fingering';
 
-export interface Props {
-    numFrets: number,
-    shouldDisplayNoteNames: boolean
-    handleNoteClicked: (stringNum:number, noteClicked: string[]) => void
+export interface IGuitarFingering {
+
 }
 
-const NUM_STRINGS = 6
+export interface Props {
+    height: number,
+    width: number,
+    title?: string,
+    numStrings: number,
+    numFrets: number,
+    tuning: string[], // TODO Array<INote>
+    showDotInlays?: boolean,
+    showFretNumbers?: boolean,
+    fingerings?: Array<IGuitarFingering>,
+    hideNoteNames?: boolean,
+    handleNoteClicked: (stringNum:number, noteClicked: string[]) => void
+}
 
 export default class Fretboard extends React.Component<Props, object> {
 
@@ -22,77 +33,149 @@ export default class Fretboard extends React.Component<Props, object> {
     }
 
     render() {
-        const {shouldDisplayNoteNames, numFrets} = this.props;
-
-        const x = 83;
-        const y = 35;
-        const cx = 260;
-        const cy = 275;
-        const r = 10;
+        const {
+            height,
+            width,
+            numStrings,
+            numFrets,
+            tuning,
+            hideNoteNames,
+            fingerings
+        } = this.props;
 
         return (
-            <svg width="1200" height="300">
-                <g>
-                    <rect x={x} y={y} width="5" height="210" style={{
-                        stroke: 'gray',
-                        fill: 'black',
-                        strokeWidth: 1
-                    }} />
+            <svg width={width} height={height}>
+
                 {
-                    // frets
-                    (Array.from(Array(numFrets).keys())).map((_, i) => {
-                        return <rect key={i} x={x + (70 * (i+1))} y={y} width="5" height="210" style={{
-                            stroke: 'gray',
-                            fill: 'white',
-                            strokeWidth: 1
-                        }} />
-                    })
+                    // todo draw title of fretboard
                 }
-                </g>
-                <g>
+
+                <Frets numFrets={numFrets} />
+
+                <DotInlays numInlays={5} />
+
                 {
-                    // dot inlays
-                    [0, 1, 2, 3].map((_, i) => {
-                        return <circle key={i} cx={cx + (140 * i)} cy={cy} r={r} style={{
-                            stroke: 'none',
-                            fill: 'lightgray',
-                        }} />
-                    })
-                }
-                    <circle cx={cx + (140*3) + 195} cy={cy} r={r} style={{
-                        stroke: 'none', 
-                        fill: 'lightgray'
-                    }} />
-                    <circle cx={cx + (140*3) + 225} cy={cy} r={r} style={{
-                        stroke: 'none', 
-                        fill: 'lightgray'
-                    }} />
-                    
-                </g>
-                <g>
-                {
-                    // strings
-                    (Array.from(Array(NUM_STRINGS).keys())).map((_, i) => {
-                        return <g key={i} transform={`translate(0, ${20 + ((i)*40)})`}>
-                                    <line x1="90" y1="20" x2={72*(numFrets+1)} y2="20" style={{ //x2=1160
-                                        stroke: 'black',
-                                        strokeWidth: 2
-                                    }} />
-                                    <StringOfNotes 
-                                        stringNum={i + 1} // zero-based index to string number (1-6)
-                                        startNote={standardGuitarTuning[i]} 
+                    // draw the strings
+                    (Array.from(Array(numStrings).keys())).map((_, stringIdx) => (
+                        <GuitarString
+                            numFrets={numFrets}
+                            stringOffsetY={stringIdx}
+                        >
+                            {
+                                // if there is a fingering, show it
+                                fingerings
+                                ? (
+                                    <Fingering
+                                        fingering={fingerings[stringIdx]}
+                                        length={numFrets + 1} //acount for string root note
+                                    />
+                                )
+                                // otherwise, show all notes on each string
+                                : (     
+                                    <StringOfNotes
+                                        stringNum={stringIdx + 1} // zero-based index to string number (1-6)
+                                        startNote={tuning[stringIdx]} 
                                         length={numFrets + 1} // account for the unfretted string note 
                                         onNoteClicked={this.onNoteClicked} 
-                                        shouldDisplayNames={shouldDisplayNoteNames}
+                                        shouldDisplayNames={hideNoteNames || false}
                                     />
-                                </g>
-                    })
+                                )
+                            } 
+                        </GuitarString>
+                    ))
                 }
-                </g>
             </svg>
         )
     }
 }
+
+interface GuitarStringProps {
+    children: React.ReactNode,
+    numFrets: number,
+    stringOffsetY: number,
+    stringColor?: string
+}
+
+function GuitarString(props: GuitarStringProps) {
+
+    let { numFrets, stringOffsetY } = props;
+
+    return (
+        <g transform={`translate(0, ${20 + ((stringOffsetY)*40)})`}>
+
+            <line x1="55" y1="20" x2={72*(numFrets+1)} y2="20" style={{ //x2=1160
+                stroke: 'black',
+                strokeWidth: 2
+            }} />
+
+            {props.children}
+                                    
+        </g>
+    )
+}
+
+interface FretsProps {
+    numFrets: number,
+}
+
+function Frets({numFrets}: FretsProps) {
+
+    const fretX = 50;
+    const fretY = 35;
+    const fretWidth = 5;
+    const fretHeight = 210;
+
+    return (
+        <g>
+            <rect x={fretX} y={fretY} width={fretWidth} height={fretHeight} style={{
+                stroke: 'gray',
+                fill: 'black',
+                strokeWidth: 1
+            }} />
+            {
+                (Array.from(Array(numFrets).keys())).map((_, i) => {
+                    return <rect key={i} x={fretX + (70 * (i+1))} y={fretY} width={fretWidth} height={fretHeight} style={{
+                        stroke: 'gray',
+                        fill: 'white',
+                        strokeWidth: 1
+                    }} />
+                })
+            }
+        </g>
+    )
+}
+
+interface DotInlaysProps {
+    numInlays: number
+}
+
+function DotInlays(props: DotInlaysProps) {
+    const cx = 230;
+    const cy = 275;
+    const r = 10;
+
+    return (
+        <g>
+            {
+                [0, 1, 2, 3].map((_, i) => {
+                    return <circle key={i} cx={cx + (140 * i)} cy={cy} r={r} style={{
+                        stroke: 'none',
+                        fill: 'lightgray',
+                    }} />
+                })
+            }
+                <circle cx={cx + (140*3) + 195} cy={cy} r={r} style={{
+                    stroke: 'none', 
+                    fill: 'lightgray'
+                }} />
+                <circle cx={cx + (140*3) + 225} cy={cy} r={r} style={{
+                    stroke: 'none', 
+                    fill: 'lightgray'
+                }} />
+        </g>
+    )
+}
+
 
 interface StringOfNotesProps {
     stringNum: number,
@@ -103,7 +186,7 @@ interface StringOfNotesProps {
 }
 
 function StringOfNotes({stringNum, startNote, length, onNoteClicked, shouldDisplayNames}: StringOfNotesProps) {
-    const x = 35;
+    const x = 4;
     const y = 5;
 
     const chromaticSequence = createChromaticSequence(startNote, length)

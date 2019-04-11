@@ -7,6 +7,8 @@ import './Main.css'
 import GameControlPanel from 'src/components/game/GameControlPanel';
 import GameController, { IGameQuestion } from 'src/game/GameController';
 import GameInfoPanel from 'src/components/game/GameInfoPanel';
+import { standardGuitarTuning } from 'src/music/Music';
+// import { testFingering } from 'src/music/guitar/Fingering';
 
 export interface Props {
 
@@ -14,6 +16,8 @@ export interface Props {
 
 export interface State {
     numFrets: number,
+    numStrings: number,
+    guitarTuning: string[],
     shouldShowNoteNames: boolean,
     gameRunning: boolean,
     time: number,
@@ -35,7 +39,9 @@ export default class Main extends React.Component<Props, State> {
 
         this.state = {
             shouldShowNoteNames: true,
+            numStrings: 6,
             numFrets: 12,
+            guitarTuning: standardGuitarTuning,
             gameRunning: false,
             time: 0,
             totalGuesses: 0,
@@ -155,6 +161,8 @@ export default class Main extends React.Component<Props, State> {
             gameInstructionTxt,
             gameRunning,
             numFrets,
+            numStrings,
+            guitarTuning,
             optSecondaryGameStatusMsg
         } = this.state;
 
@@ -188,9 +196,14 @@ export default class Main extends React.Component<Props, State> {
                 
                 <div style={{marginTop: 20}}>
                     <Fretboard 
+                        width={1200}
+                        height={300}
+                        numStrings={numStrings}
                         numFrets={numFrets}
-                        shouldDisplayNoteNames={this.state.shouldShowNoteNames} 
+                        tuning={guitarTuning}
+                        hideNoteNames={this.state.shouldShowNoteNames} 
                         handleNoteClicked={this.handleNoteClicked} 
+                        // fingerings={testFingering}
                     />
                 </div>
             </div>
