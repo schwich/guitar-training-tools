@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Route, Switch, Link } from 'react-router-dom'
 import { withStyles } from '@material-ui/core/styles'
 import { AppBar, Toolbar, Typography, Drawer, List, ListItem, 
         ListItemText, ListItemIcon, createStyles, WithStyles, Theme } from '@material-ui/core'
@@ -8,6 +9,7 @@ import './App.css';
 import CssBaseline from '@material-ui/core/CssBaseline'
 
 import Main from './containers/Main'
+import HomeContainer from './containers/Home'
 
 const drawerWidth = 150;
 
@@ -22,13 +24,26 @@ const styles = ({ spacing, mixins, zIndex }: Theme) => createStyles({
     flexGrow: 1,
     padding: spacing.unit
   },
+  navLink: {
+    textDecoration: 'none'
+  },
+  activeNavLink: {
+    backgroundColor: 'blue'
+  },
   toolbar: mixins.toolbar
 });
 
 export interface Props extends WithStyles<typeof styles> {
 }
 
-class App extends React.Component<Props, object> {
+export interface State {
+}
+
+class App extends React.Component<Props, State> {
+
+  constructor(props: Props) {
+    super(props);
+  } 
 
   public render() {
 
@@ -54,18 +69,32 @@ class App extends React.Component<Props, object> {
             paper: classes.drawerPaper
           }}
         >
-        <div className={classes.toolbar} />
-          <List>
-            <ListItem button>
-              <ListItemIcon><HomeIcon /></ListItemIcon>
-              <ListItemText primary="Home" />
-            </ListItem>
+          <div className={classes.toolbar} />
+          <List component="nav">
+            <Link className={classes.navLink} to="/">
+              <ListItem button>
+                <ListItemIcon><HomeIcon /></ListItemIcon>
+                <ListItemText primary="Home" />        
+              </ListItem>
+            </Link>
+
+            <Link className={classes.navLink} to="guitar-fretboard-trainer">
+              <ListItem button>
+                <ListItemText primary="Fretboard Trainer" />
+              </ListItem>
+            </Link>
           </List>
         </Drawer>
 
         <main className={classes.content}>
           <div className={classes.toolbar} />
-          <Main /> 
+          
+
+          <Switch>
+            <Route path="/guitar-fretboard-trainer" component={Main} />
+            <Route exact path="/" component={HomeContainer} />
+          </Switch>
+
         </main>
         
       </div>

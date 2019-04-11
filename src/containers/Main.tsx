@@ -146,6 +146,7 @@ export default class Main extends React.Component<Props, State> {
     }
 
     render() {
+
         let {
             numCorrect,
             totalGuesses,
