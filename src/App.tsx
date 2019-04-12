@@ -62,7 +62,7 @@ class App extends React.Component<Props, State> {
         </AppBar>
 
         <Drawer 
-          elevation={1}
+          elevation={2}
           style={{flexShrink: 0, width: drawerWidth, minWidth: drawerWidth, maxWidth: drawerWidth}}
           variant="permanent"
           anchor="left"
