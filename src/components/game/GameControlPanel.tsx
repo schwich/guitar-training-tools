@@ -22,7 +22,9 @@ export default class GameControlPanel extends React.Component<Props, State> {
 
     private numFretsMenuOptions = [
         '12',
-        '15'
+        '15',
+        '22',
+        '24'
     ]
 
     private guitarStrings = [

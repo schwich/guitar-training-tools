@@ -103,6 +103,9 @@ export default class Main extends React.Component<Props, State> {
     handleNoteClicked = (stringNum: number, noteClicked: string[]) => {
         if (!this.state.gameRunning) return; // don't do anything if the game isn't running
 
+        console.log('noteClicked')
+        console.log(`stringNum=${stringNum}\tnoteClicked=${noteClicked}`)
+
         if (this.gameController) {
             let answerResponse = this.gameController.checkAnswer(stringNum, noteClicked); // update game state
 
@@ -201,7 +204,7 @@ export default class Main extends React.Component<Props, State> {
                         numStrings={numStrings}
                         numFrets={numFrets}
                         tuning={guitarTuning}
-                        hideNoteNames={this.state.shouldShowNoteNames} 
+                        hideNoteNames={!this.state.shouldShowNoteNames} 
                         handleNoteClicked={this.handleNoteClicked} 
                         // fingerings={testFingering}
                     />
