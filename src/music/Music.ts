@@ -5,7 +5,8 @@ export interface INote {
     enharmonic: boolean,
     label: string[],
     color?: string,
-    display?: boolean
+    display?: boolean,
+    fingerNum ?: number
 }
 
 export interface IBarre {
@@ -13,11 +14,18 @@ export interface IBarre {
     toStr: number
 }
 
+export enum NoteBackgroundSymbol {
+    Circle,
+    Diamond,
+    Square
+}
+
 export interface IFingering {
     stringNum?: number,
     fret: number,
     fingerNum?: number,
-    barre?: IBarre
+    barre?: IBarre,
+    noteBackgroundSymbol?: NoteBackgroundSymbol
 }
 
 export interface INoteSPN extends INote {
@@ -60,7 +68,7 @@ export const standardGuitarTuning = [
 export function generateNoteSequenceFromFingering(
     stringNum: number, length: number, fingering: Array<IFingering>): Array<INote> {
     let notesInString = fingering.filter(note => {
-        return stringNum === note.stringNum;
+        return stringNum === note.stringNum; 
     })
 
     let noteSequence = [];
@@ -71,6 +79,7 @@ export function generateNoteSequenceFromFingering(
         if (frettedNote) {
             noteSequence.push({
                 display: true,
+                fingerNum: frettedNote.fingerNum,
                 ...notes[i] // make sure to create a new object from the notes
             })
         } else {
@@ -84,9 +93,6 @@ export function generateNoteSequenceFromFingering(
     return noteSequence;
 }
 
-/**
- * 
- */
 export function createChromaticSequenceSPN(startNote: string, startOctaveNum: number, length: number): INoteSPN[] {
     let nextIdx = getChromaticArrIdx(startNote);
     let notesIncluded = []
@@ -112,6 +118,11 @@ export function createChromaticSequenceSPN(startNote: string, startOctaveNum: nu
     return notesIncluded;
 }
 
+/**
+ * 
+ * @param startNote 
+ * @param length 
+ */
 export function createChromaticSequence(startNote: string, length: number): INote[] {
     let nextIdx = getChromaticArrIdx(startNote);
     let notesIncluded = []
@@ -124,6 +135,11 @@ export function createChromaticSequence(startNote: string, length: number): INot
     return notesIncluded
 }
 
+/**
+ * 
+ * @param tonic 
+ * @param type 
+ */
 export function createScale(tonic: string, type: string) {
     switch(type) {
         case 'Major':
@@ -139,6 +155,11 @@ export function createScale(tonic: string, type: string) {
     }
 }
 
+/**
+ * 
+ * @param tonic 
+ * @param pattern 
+ */
 export function createNoteSequenceFromIntervalPattern(tonic: string, pattern: string) {
     let chromaticNoteIdx = getChromaticArrIdx(tonic);
     let scale = []

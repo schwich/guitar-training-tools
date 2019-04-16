@@ -12,7 +12,7 @@ export interface Props {
     showFretNumbers?: boolean,
     fingerings?: Array<IFingering>,
     hideNoteNames?: boolean,
-    handleNoteClicked: (stringNum:number, noteClicked: string[]) => void
+    handleNoteClicked?: (stringNum:number, noteClicked: string[]) => void
 }
 
 export default class Fretboard extends React.Component<Props, object> {
@@ -22,7 +22,7 @@ export default class Fretboard extends React.Component<Props, object> {
     }
 
     onNoteClicked = (stringNum: number, note?: string[]) => {
-        if (note) {
+        if (note && this.props.handleNoteClicked) {
             this.props.handleNoteClicked(stringNum, note);
         }
     }
@@ -286,6 +286,9 @@ function FretNotes(props: FretNotesProps) {
                     noteSequence = createChromaticSequence(guitarTuning[stringIdx], numFrets+1) // account for 12 frets + open string
                 }
 
+                console.log(stringIdx + 1);
+                console.log(noteSequence);
+
                 return (
                     <g key={stringIdx} transform={`translate(${noteStartX},${stringStartY + (stringSpacing * stringIdx)})`}>
                     {
@@ -315,13 +318,35 @@ function FretNotes(props: FretNotesProps) {
                                             noteSequence[noteIdx].enharmonic
                                             ? (
                                                 <text x={-1 * noteRadius/2} y={noteRadius/2} fontSize="12">
-                                                    <tspan x={-1 * noteRadius/2} dy={-1 * noteRadius/1.7}>{noteSequence[noteIdx].label[0]}</tspan>
-                                                    <tspan x={-1 * noteRadius/2} dy={noteRadius/1.2}>{noteSequence[noteIdx].label[1]}</tspan>
+                                                    {
+                                                        fingering && noteSequence[noteIdx].fingerNum
+                                                        ? (
+                                                            <React.Fragment>
+                                                                <tspan fontSize="14" dx={noteRadius/4.4} dy={-1 * noteRadius/5}>{noteSequence[noteIdx].fingerNum}</tspan>
+                                                            </React.Fragment>
+                                                        )
+                                                        : (
+                                                            <React.Fragment>
+                                                                <tspan x={-1 * noteRadius/2} dy={-1 * noteRadius/1.7}>{noteSequence[noteIdx].label[0]}</tspan>
+                                                                <tspan x={-1 * noteRadius/2} dy={noteRadius/1.2}>{noteSequence[noteIdx].label[1]}</tspan>
+                                                            </React.Fragment>
+                                                        )
+                                                    }
+
                                                 </text>
                                             )
                                             : (
                                                 <text x={-1 * noteRadius/3.3} y={noteRadius/3.2} fontSize="14">
-                                                    {noteSequence[noteIdx].label[0]}
+                                                {
+                                                    fingering && noteSequence[noteIdx].fingerNum // display finger numbers if available (for chords)
+                                                    ? (
+                                                        <React.Fragment>{noteSequence[noteIdx].fingerNum}</React.Fragment>
+                                                    )
+                                                    : (
+                                                        <React.Fragment>{noteSequence[noteIdx].label[0] }</React.Fragment>
+                                                    )
+                                                }
+                                                    
                                                 </text>
                                             )
                                         )
@@ -374,6 +399,5 @@ function GuitarStrings(props: GuitarStringsProps) {
             })
         }
         </g>
-        
     )
 }

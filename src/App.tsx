@@ -10,6 +10,8 @@ import CssBaseline from '@material-ui/core/CssBaseline'
 
 import GuitarFretboardTrainer from './containers/GuitarFretboardTrainer'
 import HomeContainer from './containers/Home'
+import GuitarScaleDisplay from './containers/GuitarScaleDisplay';
+import GuitarChordDisplay from './containers/GuitarChordDisplay';
 
 const drawerWidth = 150;
 
@@ -84,6 +86,18 @@ class App extends React.Component<Props, State> {
                 <ListItemText primary="Fretboard Trainer" />
               </ListItem>
             </Link>
+
+            <Link className={classes.navLink} to="guitar-scale-display">
+              <ListItem button>
+                <ListItemText primary="Scales Display" />
+              </ListItem>
+            </Link>
+
+            <Link className={classes.navLink} to="guitar-chord-display">
+              <ListItem button>
+                <ListItemText primary="Chords Display" />
+              </ListItem>
+            </Link>
           </List>
         </Drawer>
 
@@ -93,6 +107,8 @@ class App extends React.Component<Props, State> {
 
           <Switch>
             
+            <Route path="/guitar-scale-display" component={GuitarScaleDisplay} />
+            <Route path="/guitar-chord-display" component={GuitarChordDisplay} />
             <Route path="/guitar-fretboard-trainer" component={GuitarFretboardTrainer} />
             <Route exact path="/" component={HomeContainer} />
           </Switch>
