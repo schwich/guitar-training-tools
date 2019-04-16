@@ -6,7 +6,7 @@ export interface Props {
     gameInstruction: string,
     gameStatusMsg: string,
     statusColor?: string,
-    optSecondaryMsg?: string
+    optSecondaryMsg?: string,
 }
 
 export default class GameInfoPanel extends React.Component<Props, object> {
@@ -17,7 +17,7 @@ export default class GameInfoPanel extends React.Component<Props, object> {
             gameInstruction,
             gameStatusMsg,
             isGameRunning,
-            optSecondaryMsg
+            optSecondaryMsg,
         } = this.props;
 
         let statusColor = 'black';

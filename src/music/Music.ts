@@ -25,6 +25,8 @@ export interface IFingering {
     fret: number,
     fingerNum?: number,
     barre?: IBarre,
+    majorRoot ?: boolean,
+    minorRoot ?: boolean
     noteBackgroundSymbol?: NoteBackgroundSymbol
 }
 

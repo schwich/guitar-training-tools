@@ -26,6 +26,8 @@ export interface State {
     nextGameStatusMsg: string,
     optSecondaryGameStatusMsg: string,
     gameInstructionTxt: string,
+    showFretLabels: boolean,
+    showInlays: boolean
 }
 
 export default class GuitarFretboardTrainer extends React.Component<Props, State> {
@@ -49,6 +51,8 @@ export default class GuitarFretboardTrainer extends React.Component<Props, State
             nextGameStatusMsg: '',
             optSecondaryGameStatusMsg: '',
             gameInstructionTxt: '',
+            showFretLabels: false,
+            showInlays: true
         };
     }
 
@@ -98,6 +102,14 @@ export default class GuitarFretboardTrainer extends React.Component<Props, State
         if (this.gameController) {
             this.gameController.setStringsEnabled(stringsSelected);
         }
+    }
+
+    handleDisplayInlaysToggle = (checked: boolean) => {
+        this.setState({ showInlays: checked });
+    }
+
+    handleDisplayFretLabelsToggle = (checked: boolean) => {
+        this.setState({ showFretLabels: checked });
     }
 
     handleNoteClicked = (stringNum: number, noteClicked: string[]) => {
@@ -172,6 +184,9 @@ export default class GuitarFretboardTrainer extends React.Component<Props, State
                 <div style={{display: 'flex'}}>
                 
                     <GameDisplay 
+                        startBtnClicked={this.handleStartGameBtn}
+                        endBtnClicked={this.handleEndGameBtn}
+                        isGameRunning={gameRunning}
                         numCorrectAnswers={numCorrect}
                         totalGuesses={totalGuesses}
                         time={time}
@@ -179,11 +194,10 @@ export default class GuitarFretboardTrainer extends React.Component<Props, State
                     />
 
                     <GameControlPanel 
+                        handleDisplayFretNumbersToggle={this.handleDisplayFretLabelsToggle}
+                        handleDisplayInlaysToggle={this.handleDisplayInlaysToggle}
                         handleNumFretsChanged={this.handleNumFretsChanged}
-                        handleStringsSelected={this.handleStringsSelected}
-                        isGameRunning={gameRunning}
-                        startBtnClicked={this.handleStartGameBtn}
-                        endBtnClicked={this.handleEndGameBtn} 
+                        handleStringsSelected={this.handleStringsSelected}                         
                     />
 
                     <GameInfoPanel 
@@ -203,6 +217,8 @@ export default class GuitarFretboardTrainer extends React.Component<Props, State
                         tuning={guitarTuning}
                         hideNoteNames={!this.state.shouldShowNoteNames} 
                         handleNoteClicked={this.handleNoteClicked} 
+                        showFretNumbers={this.state.showFretLabels}
+                        showDotInlays={this.state.showInlays}
                         // fingerings={testFingering1}
                     />
                 </div>

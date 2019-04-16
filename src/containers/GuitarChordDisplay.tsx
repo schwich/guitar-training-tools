@@ -25,6 +25,7 @@ export default class GuitarChordDisplay extends React.Component<Props, State> {
                     numFrets={12}
                     tuning={standardGuitarTuning}
                     fingerings={testFingering1}
+                    portraitOrientation
                 />
             </div>
         )

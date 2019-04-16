@@ -8,7 +8,10 @@ export interface Props {
     numCorrectAnswers: number,
     totalGuesses: number,
     time: number,
-    handleClearScore: () => void
+    handleClearScore: () => void,
+    startBtnClicked: () => void,
+    endBtnClicked: () => void,
+    isGameRunning: boolean
 }
 
 export default class GameDisplay extends React.Component<Props, object> {
@@ -17,7 +20,10 @@ export default class GameDisplay extends React.Component<Props, object> {
         let {
             numCorrectAnswers,
             totalGuesses,
-            time
+            time,
+            startBtnClicked,
+            endBtnClicked,
+            isGameRunning
         } = this.props;
 
         return (
@@ -27,6 +33,16 @@ export default class GameDisplay extends React.Component<Props, object> {
                     <GamePercentageCorrect totalGuesses={totalGuesses} numCorrect={numCorrectAnswers} />
                     <GameTimer time={time} />
                     <Button style={{marginTop: 10}} variant="contained" onClick={() => this.props.handleClearScore()}>Clear Score</Button>
+                    {
+                        isGameRunning 
+                        ? (
+                            <Button style={{maxWidth: 150, alignSelf: 'center'}} variant="contained" onClick={() => {endBtnClicked()}}>End Game</Button>
+                            
+                        ) 
+                        : (
+                            <Button style={{maxWidth: 150, alignSelf: 'center'}} variant="contained" onClick={() => {startBtnClicked()}}>Start Game</Button>
+                        )
+                    }
                 </div>
             </Paper>
         )

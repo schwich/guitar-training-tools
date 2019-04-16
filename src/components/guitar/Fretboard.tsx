@@ -12,6 +12,7 @@ export interface Props {
     showFretNumbers?: boolean,
     fingerings?: Array<IFingering>,
     hideNoteNames?: boolean,
+    portraitOrientation?: boolean,
     handleNoteClicked?: (stringNum:number, noteClicked: string[]) => void
 }
 
@@ -28,7 +29,7 @@ export default class Fretboard extends React.Component<Props, object> {
     }
 
     render() {
-        const {
+        let {
             height,
             width,
             numStrings,
@@ -36,11 +37,16 @@ export default class Fretboard extends React.Component<Props, object> {
             tuning,
             hideNoteNames,
             handleNoteClicked,
-            fingerings
+            fingerings,
+            portraitOrientation
         } = this.props;
 
+        if (portraitOrientation) {
+            // what needs to change?
+        }
+
         const svgTopMargin = 20; // todo calc depending on title or not
-        const svgBottomMargin = 20; // calc from dotInlays height
+        const svgBottomMargin = 40; // calc from dotInlays height
         const noteRadius = 15; // todo should calc from svg height/width
         const fretHeight = height - svgTopMargin - svgBottomMargin;
         const svgWidthBucket = Math.ceil(width / (numFrets + 2)); // evenly divide svg's width so the frets are even
@@ -51,6 +57,21 @@ export default class Fretboard extends React.Component<Props, object> {
         return (
             <svg width={width} height={height}>
 
+                {
+                    this.props.showFretNumbers 
+                    ? (
+                        <FretLabels 
+                            startX={0}
+                            startY={10}
+                            numFrets={numFrets}
+                            fretWidth={svgWidthBucket}
+                        />
+                    )
+                    : (
+                        '' // don't show
+                    )
+                }
+
                 <Frets 
                     startX={svgWidthBucket}
                     startY={svgTopMargin}
@@ -58,6 +79,21 @@ export default class Fretboard extends React.Component<Props, object> {
                     fretSpacing={svgWidthBucket}
                     numFrets={numFrets}
                 />
+
+                {
+                    this.props.showDotInlays
+                    ? (
+                        <FretInlays
+                        numFrets={numFrets}
+                        startX={svgWidthBucket}
+                        startY={height-(svgBottomMargin/2)}
+                        fretSpacing={svgWidthBucket}
+                        />
+                    )
+                    : (
+                        '' // don't show
+                    )
+                }
 
                 <GuitarStrings
                     startX={svgWidthBucket}
@@ -146,6 +182,100 @@ function Frets(props: FretsProps) {
     )
 }
 
+interface FretLabelsProps {
+    numFrets: number,
+    fretWidth: number,
+    startX: number,
+    startY: number
+}
+
+function FretLabels(props: FretLabelsProps) {
+
+    let {
+        numFrets,
+        fretWidth,
+        startX,
+        startY
+    } = props;
+
+    return (
+        <g>
+        {
+            (Array.from(Array(numFrets).keys())).map((_, idx) => {
+                return (
+                    <text key={idx} x={startX + (fretWidth * (idx + 2))} y={startY} fontSize="12">{idx+1}</text>
+                )
+            })
+        }
+        </g>
+    )
+}
+
+interface FretInlaysProps {
+    numFrets: number,
+    fretSpacing: number,
+    startX: number,
+    startY: number,
+    type?: string
+}
+
+function FretInlays(props: FretInlaysProps) {
+
+    let {
+        // numFrets,
+        fretSpacing,
+        startX,
+        startY
+    } = props;
+
+    const start = startX - (fretSpacing / 2.2);
+
+    // use num frets to generate
+    const inlayPositions = [3, 5, 7, 9, 12, 15];
+
+    return (
+        <g>
+        {
+            inlayPositions.map((idx) => {
+
+                // handle double inlays for octave
+                if (idx === 12) {
+                    return (
+                        <React.Fragment>
+                            <circle 
+                                key={idx} 
+                                r={10}
+                                cx={start + (idx * fretSpacing) - 12}
+                                cy={startY}
+                                fill="gray"
+                                strokeWidth="2"
+                            />  
+                            <circle 
+                                key={idx+0.5} 
+                                r={10}
+                                cx={start + (idx * fretSpacing) + 12}
+                                cy={startY}
+                                fill="gray"
+                                strokeWidth="2"
+                            /> 
+                        </React.Fragment>
+                    )
+                }
+
+                return (<circle 
+                    key={idx} 
+                    r={10}
+                    cx={start + (idx * fretSpacing)}
+                    cy={startY}
+                    fill="gray"
+                    strokeWidth="2"
+                />)
+            })
+        }
+        </g>
+    )
+}
+
 interface FretBarresProps {
     stringStartX: number,
     stringStartY: number,
@@ -164,12 +294,8 @@ interface BarreDimensions {
 }
 
 function FretBarres(props: FretBarresProps) {
-
     const {
-        // stringStartX,
         stringStartY,
-        // numFrets,
-        // numStrings,
         stringSpacing,
         fretSpacing,
         fingerings
@@ -182,15 +308,12 @@ function FretBarres(props: FretBarresProps) {
     let fingeredBarres = fingerings.filter((fingering) => {
         return fingering.barre;
     });
-    console.log(fingeredBarres);
 
     let barreDimensions: Array<BarreDimensions> = [];
     fingeredBarres.map((barreObj) => {
         let { fret, barre } = barreObj;
         if (barre) {
             let { fromStr, toStr } = barre;
-
-            console.log(`fromStr=${fromStr} toStr=${toStr}`)
 
             // should go from top string to bottom string so flip them if it's the opposite
             if (fromStr > toStr) {
@@ -220,18 +343,15 @@ function FretBarres(props: FretBarresProps) {
         
     });
 
-    console.log(barreDimensions)
-    
-
     return (
         <g>
         {
             barreDimensions.map(({x, y, height, width}, idx) => (       
-                <React.Fragment>
+                <g key={idx}>
                     <circle r={width/2} cx={x + width/2} cy={y} />
-                    <rect key={idx} x={x} y={y} width={width} height={height} strokeWidth="2" fill="black" />
+                    <rect x={x} y={y} width={width} height={height} strokeWidth="2" fill="black" />
                     <circle r={width/2} cx={x + width/2} cy={y + height} strokeWidth="2" />
-                </React.Fragment>
+                </g>
             ))
         }
         </g>
@@ -285,9 +405,6 @@ function FretNotes(props: FretNotesProps) {
                 } else {
                     noteSequence = createChromaticSequence(guitarTuning[stringIdx], numFrets+1) // account for 12 frets + open string
                 }
-
-                console.log(stringIdx + 1);
-                console.log(noteSequence);
 
                 return (
                     <g key={stringIdx} transform={`translate(${noteStartX},${stringStartY + (stringSpacing * stringIdx)})`}>

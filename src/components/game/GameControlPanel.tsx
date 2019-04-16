@@ -1,21 +1,25 @@
 import * as React from 'react'
 
-import Button from '@material-ui/core/Button'
-import { Paper, ListItemText, MenuItem, Checkbox, FormControl, InputLabel, Select, Input } from '@material-ui/core'
+import { 
+    Paper, ListItemText, MenuItem, Checkbox, 
+    FormControl, FormControlLabel, InputLabel, Select, Input,
+    Switch
+} from '@material-ui/core'
 
 export interface Props {
-    isGameRunning: boolean;
-    startBtnClicked: () => void,
-    endBtnClicked: () => void,
     handleNumFretsChanged: (numFrets: number) => void,
-    handleStringsSelected: (stringsSelected: number[]) => void
+    handleStringsSelected: (stringsSelected: number[]) => void,
+    handleDisplayInlaysToggle: (checked: boolean) => void,
+    handleDisplayFretNumbersToggle: (checked: boolean) => void
 }
 
 export interface State {
     anchorElem: HTMLElement | null,
     selectedIdx: number,
     numFretsChosen: number,
-    stringsEnabled: number[]
+    stringsEnabled: number[],
+    showFretLabels: boolean,
+    showFretInlays: boolean
 }
 
 export default class GameControlPanel extends React.Component<Props, State> {
@@ -43,8 +47,20 @@ export default class GameControlPanel extends React.Component<Props, State> {
             anchorElem: null,
             selectedIdx: 0,
             numFretsChosen: 12,
-            stringsEnabled: [0, 1, 2, 3, 4, 5] // array indexes
+            stringsEnabled: [0, 1, 2, 3, 4, 5], // array indexes
+            showFretInlays: true,
+            showFretLabels: false
         }
+    }
+
+    handleDisplayInlaysToggle = (event: React.ChangeEvent<HTMLInputElement>) => {
+        this.props.handleDisplayInlaysToggle(event.target.checked);
+        this.setState({ showFretInlays: event.target.checked })
+    }
+
+    handleDisplayFretLabelsToggle = (event: React.ChangeEvent<HTMLInputElement>) => {
+        this.props.handleDisplayFretNumbersToggle(event.target.checked);
+        this.setState({ showFretLabels: event.target.checked });
     }
 
     handleStringSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -83,12 +99,6 @@ export default class GameControlPanel extends React.Component<Props, State> {
 
     render() {
 
-        let {
-            isGameRunning,
-            startBtnClicked,
-            endBtnClicked
-        } = this.props;
-
         return (
             <Paper elevation={1} style={{maxWidth: 300, marginLeft: 10}}>
                 <div id="gameControlPanelContainer" style={{
@@ -114,6 +124,27 @@ export default class GameControlPanel extends React.Component<Props, State> {
                             </Select>
                         </FormControl>
                     </div>
+                    <div>
+                        <FormControlLabel
+                            label="Show Inlays"
+                            control={
+                                <Switch
+                                checked={this.state.showFretInlays}
+                                onChange={this.handleDisplayInlaysToggle}
+                                />
+                            }
+                        />
+                        <FormControlLabel
+                            label="Show Fret Labels"
+                            control={
+                                <Switch
+                                checked={this.state.showFretLabels}
+                                onChange={this.handleDisplayFretLabelsToggle}
+                            />
+                            }
+                        />                  
+
+                    </div>
                     <div id="gameControlPanelStringsToGuessControl">
                     
                         <FormControl style={{minWidth: 200, maxWidth: 300}}>
@@ -136,17 +167,6 @@ export default class GameControlPanel extends React.Component<Props, State> {
                             </Select>
                         </FormControl>
                     </div>
-
-                {
-                    isGameRunning 
-                    ? (
-                        <Button style={{maxWidth: 150, alignSelf: 'center'}} variant="contained" onClick={() => {endBtnClicked()}}>End Game</Button>
-                        
-                    ) 
-                    : (
-                        <Button style={{maxWidth: 150, alignSelf: 'center'}} variant="contained" onClick={() => {startBtnClicked()}}>Start Game</Button>
-                    )
-                }
                 </div>  
             </Paper>
         )
