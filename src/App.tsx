@@ -8,7 +8,7 @@ import './App.css';
 
 import CssBaseline from '@material-ui/core/CssBaseline'
 
-import Main from './containers/Main'
+import GuitarFretboardTrainer from './containers/GuitarFretboardTrainer'
 import HomeContainer from './containers/Home'
 
 const drawerWidth = 150;
@@ -92,7 +92,8 @@ class App extends React.Component<Props, State> {
           
 
           <Switch>
-            <Route path="/guitar-fretboard-trainer" component={Main} />
+            
+            <Route path="/guitar-fretboard-trainer" component={GuitarFretboardTrainer} />
             <Route exact path="/" component={HomeContainer} />
           </Switch>
 

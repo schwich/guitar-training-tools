@@ -9,13 +9,14 @@ export interface INote {
 }
 
 export interface IBarre {
-    from: number
-    to: number
+    fromStr: number
+    toStr: number
 }
 
 export interface IFingering {
     stringNum?: number,
     fret: number,
+    fingerNum?: number,
     barre?: IBarre
 }
 
@@ -58,13 +59,9 @@ export const standardGuitarTuning = [
  */
 export function generateNoteSequenceFromFingering(
     stringNum: number, length: number, fingering: Array<IFingering>): Array<INote> {
-        console.log(fingering);
     let notesInString = fingering.filter(note => {
         return stringNum === note.stringNum;
     })
-
-    console.log('notesInString');
-    console.log(notesInString);
 
     let noteSequence = [];
     for (let i = 0; i < length; i++) {

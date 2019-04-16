@@ -8,7 +8,7 @@ import GameControlPanel from 'src/components/game/GameControlPanel';
 import GameController, { IGameQuestion } from 'src/game/GameController';
 import GameInfoPanel from 'src/components/game/GameInfoPanel';
 import { standardGuitarTuning } from 'src/music/Music';
-import { testFingering1} from 'src/music/guitar/Fingering';
+// import { testFingering1 } from 'src/music/guitar/Fingering';
 
 export interface Props {
 
@@ -28,7 +28,7 @@ export interface State {
     gameInstructionTxt: string,
 }
 
-export default class Main extends React.Component<Props, State> {
+export default class GuitarFretboardTrainer extends React.Component<Props, State> {
 
     private timer: NodeJS.Timeout;
     private gameController: GameController;
@@ -102,9 +102,6 @@ export default class Main extends React.Component<Props, State> {
 
     handleNoteClicked = (stringNum: number, noteClicked: string[]) => {
         if (!this.state.gameRunning) return; // don't do anything if the game isn't running
-
-        console.log('noteClicked')
-        console.log(`stringNum=${stringNum}\tnoteClicked=${noteClicked}`)
 
         if (this.gameController) {
             let answerResponse = this.gameController.checkAnswer(stringNum, noteClicked); // update game state
@@ -206,7 +203,7 @@ export default class Main extends React.Component<Props, State> {
                         tuning={guitarTuning}
                         hideNoteNames={!this.state.shouldShowNoteNames} 
                         handleNoteClicked={this.handleNoteClicked} 
-                        fingerings={testFingering1}
+                        // fingerings={testFingering1}
                     />
                 </div>
             </div>
