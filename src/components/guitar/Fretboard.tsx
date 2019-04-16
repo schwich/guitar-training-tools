@@ -1,6 +1,5 @@
 import * as React from 'react'
-import { createChromaticSequence } from 'src/music/Music';
-// import Fingering from './Fingering';
+import { createChromaticSequence, generateNoteSequenceFromFingering, IFingering, INote } from 'src/music/Music';
 
 export interface Props {
     height: number,
@@ -11,7 +10,7 @@ export interface Props {
     tuning: string[], // TODO Array<INote>
     showDotInlays?: boolean,
     showFretNumbers?: boolean,
-    // fingerings?: Array<IGuitarFingering>,
+    fingerings?: Array<IFingering>,
     hideNoteNames?: boolean,
     handleNoteClicked: (stringNum:number, noteClicked: string[]) => void
 }
@@ -36,8 +35,8 @@ export default class Fretboard extends React.Component<Props, object> {
             numFrets,
             tuning,
             hideNoteNames,
-            handleNoteClicked
-            // fingerings
+            handleNoteClicked,
+            fingerings
         } = this.props;
 
         const svgTopMargin = 20; // todo calc depending on title or not
@@ -79,14 +78,13 @@ export default class Fretboard extends React.Component<Props, object> {
                     guitarTuning={tuning}
                     hideNoteNames={hideNoteNames}
                     onNoteClicked={handleNoteClicked}
+                    fingering={fingerings}
                 />
 
             </svg>
         )
     }
 }
-
-
 
 interface FretsProps {
     startX: number,
@@ -139,8 +137,9 @@ interface FretNotesProps {
     fretSpacing: number,
     noteRadius: number
     guitarTuning: string[],
-    onNoteClicked: (stringNum:number, noteClicked: string[]) => void,
-    hideNoteNames?: boolean
+    onNoteClicked?: (stringNum:number, noteClicked: string[]) => void,
+    hideNoteNames?: boolean,
+    fingering?: Array<IFingering>
 }
 
 function FretNotes(props: FretNotesProps) {
@@ -155,6 +154,7 @@ function FretNotes(props: FretNotesProps) {
         noteRadius,
         guitarTuning,
         onNoteClicked,
+        fingering
     } = props;
 
     const hideNoteNames = props.hideNoteNames || false;
@@ -162,48 +162,69 @@ function FretNotes(props: FretNotesProps) {
     // calculate note start X (to account for open string's note, which is behind the nut)
     const noteStartX = stringStartX - (Math.ceil(fretSpacing / 2.25));
 
+    // TODO calculate note radius from numfrets, fretboardWidth, fretboardHeight, and numStrings
+
     return (
         <g>
         {
             (Array.from(Array(numStrings).keys())).map((_, stringIdx) => {
+
+                let noteSequence: Array<INote>;
+                if (fingering) {
+                    console.log('fingering');
+                    console.log(fingering);
+                    noteSequence = generateNoteSequenceFromFingering(stringIdx + 1, numFrets + 1, fingering);
+                } else {
+                    noteSequence = createChromaticSequence(guitarTuning[stringIdx], numFrets+1) // account for 12 frets + open string
+                }
+
+                console.log(`note sequence for string ${stringIdx+1}`);
+                console.log(noteSequence);
+                // const chromaticSequence = createChromaticSequence(guitarTuning[stringIdx], numFrets+1) // account for 12 frets + open string
+
                 return (
                     <g key={stringIdx} transform={`translate(${noteStartX},${stringStartY + (stringSpacing * stringIdx)})`}>
                     {
                         (Array.from(Array(numFrets+1).keys())).map((_, noteIdx) => {
-
-                            // todo how to handle fingering?
-                            const chromaticSequence = createChromaticSequence(guitarTuning[stringIdx], numFrets+1) // account for 12 frets + open string
-
                             return (
-                                <g onClick={() => {onNoteClicked && onNoteClicked(stringIdx + 1, chromaticSequence[noteIdx].label)}} 
+                                <g onClick={() => {onNoteClicked && onNoteClicked(stringIdx + 1, noteSequence[noteIdx].label)}} 
                                     key={noteIdx} 
                                     transform={`translate(${noteIdx * fretSpacing}, 0)`}
                                 >
-                                    <circle r={noteRadius} style={{
-                                        fill: 'white',
-                                        stroke: 'gray',
-                                        strokeWidth: 2
-                                    }} />
                                     {
-                                        !hideNoteNames 
+                                        noteSequence[noteIdx].display
                                         ? (
-                                            chromaticSequence[noteIdx].enharmonic 
+                                            <circle r={noteRadius} style={{
+                                                fill: 'white',
+                                                stroke: 'gray',
+                                                strokeWidth: 2
+                                            }} />
+                                        )
+                                        : (
+                                            ''
+                                        )
+                                    }
+                                    {
+                                        noteSequence[noteIdx].display && !hideNoteNames
+                                        ? (
+                                         
+                                            noteSequence[noteIdx].enharmonic
                                             ? (
-                                                <text x={-1 * noteRadius/2.5} y={noteRadius/2} fontSize="12">
-                                                    <tspan x={-1 * noteRadius/2.5} dy={-1 * noteRadius/1.5}>{chromaticSequence[noteIdx].label[0]}</tspan>
-                                                    <tspan x={-1 * noteRadius/2.5} dy={noteRadius/1.2}>{chromaticSequence[noteIdx].label[1]}</tspan>
+                                                <text x={-1 * noteRadius/2} y={noteRadius/2} fontSize="12">
+                                                    <tspan x={-1 * noteRadius/2} dy={-1 * noteRadius/1.7}>{noteSequence[noteIdx].label[0]}</tspan>
+                                                    <tspan x={-1 * noteRadius/2} dy={noteRadius/1.2}>{noteSequence[noteIdx].label[1]}</tspan>
                                                 </text>
                                             )
                                             : (
                                                 <text x={-1 * noteRadius/3.3} y={noteRadius/3.2} fontSize="14">
-                                                    {chromaticSequence[noteIdx].label[0]}
+                                                    {noteSequence[noteIdx].label[0]}
                                                 </text>
                                             )
                                         )
                                         : (
                                             '' // don't display note names, return empty string
-                                        )
-                                    }
+                                        )                                      
+                                    }                                                                       
                                 </g>
                             )
                         })

@@ -8,7 +8,7 @@ import GameControlPanel from 'src/components/game/GameControlPanel';
 import GameController, { IGameQuestion } from 'src/game/GameController';
 import GameInfoPanel from 'src/components/game/GameInfoPanel';
 import { standardGuitarTuning } from 'src/music/Music';
-// import { testFingering } from 'src/music/guitar/Fingering';
+import { testFingering1} from 'src/music/guitar/Fingering';
 
 export interface Props {
 
@@ -206,7 +206,7 @@ export default class Main extends React.Component<Props, State> {
                         tuning={guitarTuning}
                         hideNoteNames={!this.state.shouldShowNoteNames} 
                         handleNoteClicked={this.handleNoteClicked} 
-                        // fingerings={testFingering}
+                        fingerings={testFingering1}
                     />
                 </div>
             </div>

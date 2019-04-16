@@ -4,7 +4,19 @@ export interface INote {
     chromaticIdx: number,
     enharmonic: boolean,
     label: string[],
-    color?: string
+    color?: string,
+    display?: boolean
+}
+
+export interface IBarre {
+    from: number
+    to: number
+}
+
+export interface IFingering {
+    stringNum?: number,
+    fret: number,
+    barre?: IBarre
 }
 
 export interface INoteSPN extends INote {
@@ -39,6 +51,43 @@ export const standardGuitarTuning = [
 ]
 
 /**
+ * Take a fingering and generate a note sequence for an entire string, including blank notes for non-fretted notes.
+ * @param stringNum what string are we generating a sequence for
+ * @param length number of notes to generate in the sequence, usually the total number of frets
+ * @param fingering what notes to include in the sequence
+ */
+export function generateNoteSequenceFromFingering(
+    stringNum: number, length: number, fingering: Array<IFingering>): Array<INote> {
+        console.log(fingering);
+    let notesInString = fingering.filter(note => {
+        return stringNum === note.stringNum;
+    })
+
+    console.log('notesInString');
+    console.log(notesInString);
+
+    let noteSequence = [];
+    for (let i = 0; i < length; i++) {
+        let frettedNote = notesInString.find(note => {
+            return note.fret === i;
+        })
+        if (frettedNote) {
+            noteSequence.push({
+                display: true,
+                ...notes[i] // make sure to create a new object from the notes
+            })
+        } else {
+            noteSequence.push({
+                display: false,
+                ...notes[i]
+            })
+        }
+    }
+
+    return noteSequence;
+}
+
+/**
  * 
  */
 export function createChromaticSequenceSPN(startNote: string, startOctaveNum: number, length: number): INoteSPN[] {
@@ -70,7 +119,7 @@ export function createChromaticSequence(startNote: string, length: number): INot
     let nextIdx = getChromaticArrIdx(startNote);
     let notesIncluded = []
     for (let i = 0; i < length; i++) {
-        let n = { ...notes[nextIdx] } // new object
+        let n = { ...notes[nextIdx], display: true } // new object
         notesIncluded.push(n)
         nextIdx = (nextIdx + 1) % 12;
     }
