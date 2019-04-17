@@ -22,7 +22,7 @@ export interface State {
     showFretInlays: boolean
 }
 
-export default class GameControlPanel extends React.Component<Props, State> {
+export default class FretboardControlPanel extends React.Component<Props, State> {
 
     private numFretsMenuOptions = [
         '12',

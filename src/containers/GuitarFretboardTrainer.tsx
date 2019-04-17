@@ -3,11 +3,11 @@ import * as React from 'react';
 import Fretboard from '../components/guitar/Fretboard'
 import GameDisplay from '../components/game/GameDisplay'
 
-import './Main.css'
-import GameControlPanel from 'src/components/game/GameControlPanel';
+import FretboardControlPanel from 'src/components/game/FretboardControlPanel';
 import GameController, { IGameQuestion } from 'src/game/GameController';
 import GameInfoPanel from 'src/components/game/GameInfoPanel';
 import { standardGuitarTuning } from 'src/music/Music';
+
 // import { testFingering1 } from 'src/music/guitar/Fingering';
 
 export interface Props {
@@ -193,7 +193,7 @@ export default class GuitarFretboardTrainer extends React.Component<Props, State
                         handleClearScore={this.handleClearScore}
                     />
 
-                    <GameControlPanel 
+                    <FretboardControlPanel 
                         handleDisplayFretNumbersToggle={this.handleDisplayFretLabelsToggle}
                         handleDisplayInlaysToggle={this.handleDisplayInlaysToggle}
                         handleNumFretsChanged={this.handleNumFretsChanged}

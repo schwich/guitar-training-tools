@@ -231,7 +231,7 @@ function FretInlays(props: FretInlaysProps) {
     const start = startX - (fretSpacing / 2.2);
 
     // use num frets to generate
-    const inlayPositions = [3, 5, 7, 9, 12, 15];
+    const inlayPositions = [3, 5, 7, 9, 12, 15, 17, 19, 21, 24];
 
     return (
         <g>
@@ -239,7 +239,7 @@ function FretInlays(props: FretInlaysProps) {
             inlayPositions.map((idx) => {
 
                 // handle double inlays for octave
-                if (idx === 12) {
+                if (idx === 12 || idx === 24) {
                     return (
                         <React.Fragment>
                             <circle 

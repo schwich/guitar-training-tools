@@ -1,4 +1,5 @@
-import { IFingering, NoteBackgroundSymbol } from '../Music';
+import { IFingering, NoteBackgroundSymbol, IKey } from '../Music';
+import { IScalePattern } from './ScalePattern';
 
 export const testFingering1: Array<IFingering> = [
     {
@@ -28,3 +29,13 @@ export const GMajorScale: Array<IFingering> = [
     { stringNum: 1, fret: 3, fingerNum: 2, majorRoot: true }, // G
     { stringNum: 1, fret: 5, fingerNum: 4}
 ]
+
+// export function generateFingeringFromScalePattern(key: IKey, scalePattern: IScalePattern): Array<IFingering> {
+//     let { minorRoot, majorRoot, pattern } = scalePattern;
+//     let { keyType, chromaticNote } = key;
+
+//     let fingering = [];
+//     for (let p of pattern) {
+
+//     }
+// }

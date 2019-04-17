@@ -1,6 +1,5 @@
 import * as React from 'react'
 
-import './GameDisplay.css'
 import { convertFractionToPercentage } from 'src/util/Util';
 import { Paper, Button } from '@material-ui/core';
 

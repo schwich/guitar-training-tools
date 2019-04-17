@@ -27,7 +27,8 @@ export interface IFingering {
     barre?: IBarre,
     majorRoot ?: boolean,
     minorRoot ?: boolean
-    noteBackgroundSymbol?: NoteBackgroundSymbol
+    noteBackgroundSymbol?: NoteBackgroundSymbol,
+    color ?: string
 }
 
 export interface INoteSPN extends INote {
@@ -48,6 +49,32 @@ export const notes: INote[] = [
     {chromaticIdx: 11, enharmonic: false, label: ['G'], color: 'purple'},
     {chromaticIdx: 12, enharmonic: true, label: ['G♯', 'A♭']},
 ]
+
+export enum KeyNote {
+    F,
+    C,
+    G,
+    D,
+    A,
+    E,
+    B
+}
+
+export enum Accidental {
+    Sharp,
+    Flat
+}
+
+export enum KeyType {
+    Major,
+    Minor
+}
+
+export interface IKey {
+    chromaticNote: INote,
+    accidental: Accidental,
+    type: KeyType
+}
 
 /**
  * The strings of the guitar (in standard tuning) represented in 
