@@ -26,10 +26,12 @@ export default class KeyChooser extends React.Component<Props, State> {
 
     handleKeyNoteChanged = (keyNote: KeyNote) => {
         this.setState({ keyNote });
+        this.props.keyNoteChanged(keyNote);
     }
 
     handleKeyTypeChanged = (keyType: KeyType) => {
         this.setState({ keyType });
+        this.props.keyTypeChanged(keyType);
     }
 
     render() {

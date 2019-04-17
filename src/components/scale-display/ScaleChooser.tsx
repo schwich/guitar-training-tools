@@ -3,9 +3,10 @@ import * as React from 'react';
 import { Paper, List, ListItem, ListItemText, Collapse, Theme, WithStyles } from '@material-ui/core';
 import { ExpandMore, ExpandLess } from '@material-ui/icons';
 import { withStyles } from '@material-ui/core/styles';
+import { ScalePatternType } from 'src/music/guitar/ScalePattern';
 
 export interface Props extends WithStyles<typeof styles> {
-
+    handleScaleChosen: (scaleType: ScalePatternType) => void
 }
 
 export interface State {
@@ -59,19 +60,29 @@ class ScaleChooser extends React.Component<Props, State> {
                     </ListItem>
                     <Collapse in={this.state.pentatonicOpen}>
                         <List>
-                            <ListItem button className={classes.nested}>
+                            <ListItem
+                                onClick={() => {this.props.handleScaleChosen(ScalePatternType.Pentatonic_1)}} 
+                                button className={classes.nested}>
                                 <ListItemText primary="Pattern 1" />
                             </ListItem>
-                            <ListItem button className={classes.nested}>
+                            <ListItem 
+                                onClick={() => {this.props.handleScaleChosen(ScalePatternType.Pentatonic_2)}} 
+                                button className={classes.nested}>
                                 <ListItemText primary="Pattern 2" />
                             </ListItem>
-                            <ListItem button className={classes.nested}>
+                            <ListItem 
+                                onClick={() => {this.props.handleScaleChosen(ScalePatternType.Pentatonic_3)}} 
+                                button className={classes.nested}>
                                 <ListItemText primary="Pattern 3" />
                             </ListItem>
-                            <ListItem button className={classes.nested}>
+                            <ListItem 
+                                onClick={() => {this.props.handleScaleChosen(ScalePatternType.Pentatonic_4)}} 
+                                button className={classes.nested}>
                                 <ListItemText primary="Pattern 4" />
                             </ListItem>
-                            <ListItem button className={classes.nested}>
+                            <ListItem 
+                                onClick={() => {this.props.handleScaleChosen(ScalePatternType.Pentatonic_5)}} 
+                                button className={classes.nested}>
                                 <ListItemText primary="Pattern 5" />
                             </ListItem>
                         </List>

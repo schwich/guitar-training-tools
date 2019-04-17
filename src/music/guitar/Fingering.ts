@@ -1,4 +1,4 @@
-import { IFingering, NoteBackgroundSymbol, IKey } from '../Music';
+import { IFingering, NoteBackgroundSymbol, IKey, KeyType, createChromaticSequence } from '../Music';
 import { IScalePattern } from './ScalePattern';
 
 export const testFingering1: Array<IFingering> = [
@@ -30,12 +30,71 @@ export const GMajorScale: Array<IFingering> = [
     { stringNum: 1, fret: 5, fingerNum: 4}
 ]
 
-// export function generateFingeringFromScalePattern(key: IKey, scalePattern: IScalePattern): Array<IFingering> {
-//     let { minorRoot, majorRoot, pattern } = scalePattern;
-//     let { keyType, chromaticNote } = key;
+export function generateFingeringFromKeyAndScalePattern(
+    key: IKey, 
+    scalePattern: IScalePattern, 
+    stringTuning: string[],
+    stringLength: number
+    ): Array<IFingering> {
+    let { minorRoot, majorRoot, pattern } = scalePattern;
+    let { note, type } = key;
 
-//     let fingering = [];
-//     for (let p of pattern) {
+    // pivot off of major or minor root depending on key
+    let rootString;
+    if (type === KeyType.Major) {
+        rootString = majorRoot.stringNum;
+    } else if (type === KeyType.Minor) {
+        rootString = minorRoot.stringNum;
+    }
 
-//     }
-// }
+    // find the fret number on that string for the root note / tonic
+    let stringNotes;
+    switch (rootString) {
+        case 6:
+            stringNotes = createChromaticSequence(stringTuning[5], stringLength); // todo really need to create a tuning type
+        break;
+
+        case 5:
+            stringNotes = createChromaticSequence(stringTuning[4], stringLength);
+        break;
+
+        case 4:
+            stringNotes = createChromaticSequence(stringTuning[3], stringLength);
+        break;
+
+        default:
+            throw Error(`Rootstring=${rootString}`)
+    }
+
+    // define fret baseline
+    let fretBaseline = 0;
+    for (let i = 0; i < stringNotes.length; i++) {
+        if (stringNotes[i].label.includes(note)) {
+            fretBaseline = i;
+            break;
+        }
+    }
+
+    switch (type) {
+        case KeyType.Major:
+            fretBaseline -= 4;
+            if (fretBaseline < 0) {
+                fretBaseline += 12;
+            }
+        break;
+
+        case KeyType.Minor: 
+        break;
+    }
+    
+    
+    let fingering: Array<IFingering> = [];
+    for (let p of pattern) {
+        fingering.push({
+            stringNum: p.stringNum,
+            fret: fretBaseline + p.baseFretOffset
+        });
+    }
+
+    return fingering;
+}

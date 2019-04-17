@@ -3,7 +3,6 @@ export interface IRootNote {
     idxInScalePattern: number
 }
 
-
 export interface IPatternNote {
     patternIdx: number,
     stringNum: number,
@@ -14,6 +13,15 @@ export interface IScalePattern {
     minorRoot: IRootNote,
     majorRoot: IRootNote,
     pattern: Array<IPatternNote>
+}
+
+export enum ScalePatternType {
+    Pentatonic_1,
+    Pentatonic_2,
+    Pentatonic_3,
+    Pentatonic_4,
+    Pentatonic_5,
+    Major
 }
 
 export const PentatonicPattern1: IScalePattern = {

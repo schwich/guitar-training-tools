@@ -51,13 +51,13 @@ export const notes: INote[] = [
 ]
 
 export enum KeyNote {
-    F,
-    C,
-    G,
-    D,
-    A,
-    E,
-    B
+    F = 'F',
+    C = 'C',
+    G = 'G',
+    D = 'D',
+    A = 'A',
+    E = 'E',
+    B = 'B'
 }
 
 export enum Accidental {
@@ -71,7 +71,7 @@ export enum KeyType {
 }
 
 export interface IKey {
-    chromaticNote: INote,
+    note: KeyNote,
     accidental: Accidental,
     type: KeyType
 }
@@ -101,20 +101,21 @@ export function generateNoteSequenceFromFingering(
     })
 
     let noteSequence = [];
-    for (let i = 0; i < length; i++) {
+    for (let i = 0; i < length; i++) { // push #(length) of notes to noteSequence
         let frettedNote = notesInString.find(note => {
             return note.fret === i;
         })
+
         if (frettedNote) {
             noteSequence.push({
                 display: true,
                 fingerNum: frettedNote.fingerNum,
-                ...notes[i] // make sure to create a new object from the notes
+                ...notes[i % 12] // make sure to create a new object from the notes
             })
         } else {
             noteSequence.push({
                 display: false,
-                ...notes[i]
+                ...notes[i % 12]
             })
         }
     }
@@ -160,7 +161,6 @@ export function createChromaticSequence(startNote: string, length: number): INot
         notesIncluded.push(n)
         nextIdx = (nextIdx + 1) % 12;
     }
-
     return notesIncluded
 }
 
