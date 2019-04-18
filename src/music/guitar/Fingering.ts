@@ -1,6 +1,7 @@
 import { IFingering, NoteBackgroundSymbol, IKey, KeyType, createChromaticSequence } from '../Music';
 import { IScalePattern } from './ScalePattern';
 
+// Bb Minor
 export const testFingering1: Array<IFingering> = [
     {
         fret: 1,
@@ -30,6 +31,14 @@ export const GMajorScale: Array<IFingering> = [
     { stringNum: 1, fret: 5, fingerNum: 4}
 ]
 
+/**
+ * Generate a fingering object for a given key (Key=> Note + Type)
+ * This allows the pattern to be displayed by the <Fretboard /> component
+ * @param key 
+ * @param scalePattern 
+ * @param stringTuning 
+ * @param stringLength or number of frets
+ */
 export function generateFingeringFromKeyAndScalePattern(
     key: IKey, 
     scalePattern: IScalePattern, 
@@ -74,7 +83,6 @@ export function generateFingeringFromKeyAndScalePattern(
             break;
         }
     }
-
     switch (type) {
         case KeyType.Major:
             fretBaseline -= majorRoot.offsetFromBaseFret
@@ -85,6 +93,8 @@ export function generateFingeringFromKeyAndScalePattern(
         break;
     }
 
+    // if the baseline is negative (which means that the pattern cannot be played at a lower position)
+    // or if the pattern includes open strings, move the pattern up 12 frets (an octave)
     if (fretBaseline < 1) {
         fretBaseline += 12;
     }
@@ -97,6 +107,6 @@ export function generateFingeringFromKeyAndScalePattern(
             fret: fretBaseline + p.baseFretOffset
         });
     }
-    
+
     return fingering;
 }

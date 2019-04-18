@@ -6,9 +6,8 @@ import { generateFingeringFromKeyAndScalePattern } from '../music/guitar/Fingeri
 import { standardGuitarTuning, KeyNote, IFingering, KeyType, IKey, Accidental } from '../music/Music';
 import ScaleChooser from 'src/components/scale-display/ScaleChooser';
 import KeyChooser from 'src/components/guitar/KeyChooser';
-import { ScalePatternType, 
-    PentatonicPattern1, PentatonicPattern2,
-    PentatonicPattern3, PentatonicPattern4, PentatonicPattern5 } from 'src/music/guitar/ScalePattern';
+import { ScalePatternType, PentatonicPattern1, getPatternFromType } from 'src/music/guitar/ScalePattern';
+import PatternControl from 'src/components/scale-display/PatternControl';
 
 export interface Props {
 
@@ -53,7 +52,7 @@ export default class GuitarScaleDisplay extends React.Component<Props, State> {
         this.setState({ 
             keyType: type,
             scaleFingering: generateFingeringFromKeyAndScalePattern(
-                key, PentatonicPattern1, standardGuitarTuning, this.numFrets
+                key, getPatternFromType(this.state.scalePatternType), standardGuitarTuning, this.numFrets
             )
         });
     }
@@ -67,7 +66,7 @@ export default class GuitarScaleDisplay extends React.Component<Props, State> {
         this.setState({ 
             keyNote: note,
             scaleFingering: generateFingeringFromKeyAndScalePattern(
-                key, PentatonicPattern1, standardGuitarTuning, this.numFrets
+                key, getPatternFromType(this.state.scalePatternType), standardGuitarTuning, this.numFrets
             )
         });
     }
@@ -79,32 +78,10 @@ export default class GuitarScaleDisplay extends React.Component<Props, State> {
             type: this.state.keyType
         }
 
-        let pattern;
-        switch (scalePatternType) {
-            case ScalePatternType.Pentatonic_1:
-                pattern = PentatonicPattern1;
-            break;
-            case ScalePatternType.Pentatonic_2:
-                pattern = PentatonicPattern2;
-            break;
-            case ScalePatternType.Pentatonic_3:
-                pattern = PentatonicPattern3;
-            break;
-            case ScalePatternType.Pentatonic_4:
-                pattern = PentatonicPattern4;
-            break;
-            case ScalePatternType.Pentatonic_5:
-                pattern = PentatonicPattern5;
-            break;
-            default:
-                pattern = PentatonicPattern1;
-            break;
-        }
-
         this.setState({ 
             scalePatternType,
             scaleFingering: generateFingeringFromKeyAndScalePattern(
-                key, pattern, standardGuitarTuning, this.numFrets
+                key, getPatternFromType(scalePatternType), standardGuitarTuning, this.numFrets
             )
         });
     }
@@ -124,6 +101,10 @@ export default class GuitarScaleDisplay extends React.Component<Props, State> {
                             keyNoteChanged={this.handleKeyNoteChanged}
                             keyTypeChanged={this.handleKeyTypeChanged}
                         />
+                    </div>
+
+                    <div>
+                        <PatternControl />
                     </div>
  
                 </div>

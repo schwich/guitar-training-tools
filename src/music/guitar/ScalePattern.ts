@@ -22,9 +22,246 @@ export enum ScalePatternType {
     Pentatonic_3,
     Pentatonic_4,
     Pentatonic_5,
-    Major
+    Major_1,
+    Major_2,
+    Major_3,
+    Major_4,
+    Major_5
 }
 
+export function getPatternFromType(patternType: ScalePatternType): IScalePattern {
+    switch (patternType) {
+        // pentatonic scales
+        case ScalePatternType.Pentatonic_1:
+            return PentatonicPattern1;
+        break;
+        case ScalePatternType.Pentatonic_2:
+            return PentatonicPattern2;
+        break;
+        case ScalePatternType.Pentatonic_3:
+            return PentatonicPattern3;
+        break;
+        case ScalePatternType.Pentatonic_4:
+            return PentatonicPattern4;
+        break;
+        case ScalePatternType.Pentatonic_5:
+            return PentatonicPattern5;
+        break;
+
+        // major scales
+        case ScalePatternType.Major_1:
+            return MajorScalePattern1;
+        break;
+        case ScalePatternType.Major_2:
+            return MajorScalePattern2;
+        break;
+        case ScalePatternType.Major_3:
+            return MajorScalePattern3;
+        break;
+        case ScalePatternType.Major_4:
+            return MajorScalePattern4;
+        break;
+        case ScalePatternType.Major_5:
+            return MajorScalePattern5;
+        break;
+
+        default:
+            return PentatonicPattern1;
+        break;
+    }
+}
+
+// CAGED E Shape Pentatonic
+export const MajorScalePattern1: IScalePattern = {
+    minorRoot: {
+        stringNum: -1,
+        idxInScalePattern: -1,
+        offsetFromBaseFret: -1
+    },
+    majorRoot: {
+        stringNum: 6,
+        idxInScalePattern: 2,
+        offsetFromBaseFret: 1
+    },
+    pattern: [ // string 6 -> 1
+        { patternIdx: 1, stringNum: 6, baseFretOffset: 0 },
+        { patternIdx: 2, stringNum: 6, baseFretOffset: 1 },
+        { patternIdx: 3, stringNum: 6, baseFretOffset: 3 },
+
+        { patternIdx: 4, stringNum: 5, baseFretOffset: 0 },
+        { patternIdx: 5, stringNum: 5, baseFretOffset: 1 },
+        { patternIdx: 6, stringNum: 5, baseFretOffset: 3 },
+
+        { patternIdx: 7, stringNum: 4, baseFretOffset: 0 },
+        { patternIdx: 8, stringNum: 4, baseFretOffset: 2 },
+        { patternIdx: 9, stringNum: 4, baseFretOffset: 3 },
+
+        { patternIdx: 10, stringNum: 3, baseFretOffset: 0 },
+        { patternIdx: 11, stringNum: 3, baseFretOffset: 2 },
+        { patternIdx: 12, stringNum: 3, baseFretOffset: 3 },
+
+        { patternIdx: 13, stringNum: 2, baseFretOffset: 1 },
+        { patternIdx: 14, stringNum: 2, baseFretOffset: 3 },
+
+        { patternIdx: 15, stringNum: 1, baseFretOffset: 0 },
+        { patternIdx: 16, stringNum: 1, baseFretOffset: 1 },
+        { patternIdx: 17, stringNum: 1, baseFretOffset: 3 },
+    ]
+}
+
+// CAGED D Shape Pentatonic
+export const MajorScalePattern2: IScalePattern = {
+    minorRoot: {
+        stringNum: -1,
+        idxInScalePattern: -1,
+        offsetFromBaseFret: -1
+    },
+    majorRoot: {
+        stringNum: 4,
+        idxInScalePattern: 7,
+        offsetFromBaseFret: 1
+    },
+    pattern: [ // string 6 -> 1
+        { patternIdx: 1, stringNum: 6, baseFretOffset: 1 },
+        { patternIdx: 2, stringNum: 6, baseFretOffset: 3 },
+        { patternIdx: 3, stringNum: 6, baseFretOffset: 4 },
+
+        { patternIdx: 5, stringNum: 5, baseFretOffset: 1 },
+        { patternIdx: 6, stringNum: 5, baseFretOffset: 3 },
+
+        { patternIdx: 7, stringNum: 4, baseFretOffset: 0 },
+        { patternIdx: 8, stringNum: 4, baseFretOffset: 1 },
+        { patternIdx: 9, stringNum: 4, baseFretOffset: 3 },
+
+        { patternIdx: 10, stringNum: 3, baseFretOffset: 0 },
+        { patternIdx: 11, stringNum: 3, baseFretOffset: 1 },
+        { patternIdx: 12, stringNum: 3, baseFretOffset: 3 },
+
+        { patternIdx: 13, stringNum: 2, baseFretOffset: 1 },
+        { patternIdx: 14, stringNum: 2, baseFretOffset: 3 },
+        { patternIdx: 14, stringNum: 2, baseFretOffset: 4 },
+
+        { patternIdx: 15, stringNum: 1, baseFretOffset: 1 },
+        { patternIdx: 16, stringNum: 1, baseFretOffset: 3 },
+        { patternIdx: 17, stringNum: 1, baseFretOffset: 4 },
+    ]
+}
+
+// CAGED C Shape Pentatonic
+export const MajorScalePattern3: IScalePattern = {
+    minorRoot: {
+        stringNum: -1,
+        idxInScalePattern: -1,
+        offsetFromBaseFret: -1
+    },
+    majorRoot: {
+        stringNum: 5,
+        idxInScalePattern: 6,
+        offsetFromBaseFret: 3
+    },
+    pattern: [ // string 6 -> 1
+        { patternIdx: 1, stringNum: 6, baseFretOffset: 0 },
+        { patternIdx: 2, stringNum: 6, baseFretOffset: 1 },
+        { patternIdx: 3, stringNum: 6, baseFretOffset: 3 },
+
+        { patternIdx: 4, stringNum: 5, baseFretOffset: 0 },
+        { patternIdx: 5, stringNum: 5, baseFretOffset: 2 },
+        { patternIdx: 6, stringNum: 5, baseFretOffset: 3 },
+
+        { patternIdx: 7, stringNum: 4, baseFretOffset: 0 },
+        { patternIdx: 8, stringNum: 4, baseFretOffset: 2 },
+        { patternIdx: 9, stringNum: 4, baseFretOffset: 3 },
+
+        { patternIdx: 10, stringNum: 3, baseFretOffset: 0 },
+        { patternIdx: 11, stringNum: 3, baseFretOffset: 2 },
+
+        { patternIdx: 13, stringNum: 2, baseFretOffset: 0 },
+        { patternIdx: 14, stringNum: 2, baseFretOffset: 1 },
+        { patternIdx: 14, stringNum: 2, baseFretOffset: 3 },
+
+        { patternIdx: 15, stringNum: 1, baseFretOffset: 0 },
+        { patternIdx: 16, stringNum: 1, baseFretOffset: 1 },
+        { patternIdx: 17, stringNum: 1, baseFretOffset: 3 },
+    ]
+}
+
+// CAGED A Shape Pentatonic
+export const MajorScalePattern4: IScalePattern = {
+    minorRoot: {
+        stringNum: -1,
+        idxInScalePattern: -1,
+        offsetFromBaseFret: -1
+    },
+    majorRoot: {
+        stringNum: 5,
+        idxInScalePattern: 5,
+        offsetFromBaseFret: 2
+    },
+    pattern: [ // string 6 -> 1
+        { patternIdx: 1, stringNum: 6, baseFretOffset: 0 },
+        { patternIdx: 2, stringNum: 6, baseFretOffset: 2 },
+        { patternIdx: 3, stringNum: 6, baseFretOffset: 4 },
+
+        { patternIdx: 4, stringNum: 5, baseFretOffset: 1 },
+        { patternIdx: 5, stringNum: 5, baseFretOffset: 2 },
+        { patternIdx: 6, stringNum: 5, baseFretOffset: 4 },
+
+        { patternIdx: 7, stringNum: 4, baseFretOffset: 1 },
+        { patternIdx: 8, stringNum: 4, baseFretOffset: 2 },
+        { patternIdx: 9, stringNum: 4, baseFretOffset: 4 },
+
+        { patternIdx: 10, stringNum: 3, baseFretOffset: 1 },
+        { patternIdx: 11, stringNum: 3, baseFretOffset: 3 },
+        { patternIdx: 12, stringNum: 3, baseFretOffset: 4 },
+
+        { patternIdx: 13, stringNum: 2, baseFretOffset: 2 },
+        { patternIdx: 14, stringNum: 2, baseFretOffset: 4 },
+        { patternIdx: 14, stringNum: 2, baseFretOffset: 5 },
+
+        { patternIdx: 15, stringNum: 1, baseFretOffset: 2 },
+        { patternIdx: 16, stringNum: 1, baseFretOffset: 4 },
+    ]
+}
+
+// CAGED G Shape Pentatonic
+export const MajorScalePattern5: IScalePattern = {
+    minorRoot: {
+        stringNum: -1,
+        idxInScalePattern: -1,
+        offsetFromBaseFret: -1
+    },
+    majorRoot: {
+        stringNum: 6,
+        idxInScalePattern: 3,
+        offsetFromBaseFret: 4
+    },
+    pattern: [ // string 6 -> 1
+        { patternIdx: 1, stringNum: 6, baseFretOffset: 1 },
+        { patternIdx: 2, stringNum: 6, baseFretOffset: 3 },
+        { patternIdx: 3, stringNum: 6, baseFretOffset: 4 },
+
+        { patternIdx: 4, stringNum: 5, baseFretOffset: 1 },
+        { patternIdx: 5, stringNum: 5, baseFretOffset: 3 },
+        { patternIdx: 6, stringNum: 5, baseFretOffset: 4 },
+
+        { patternIdx: 7, stringNum: 4, baseFretOffset: 1 },
+        { patternIdx: 8, stringNum: 4, baseFretOffset: 3 },
+
+        { patternIdx: 10, stringNum: 3, baseFretOffset: 0 },
+        { patternIdx: 11, stringNum: 3, baseFretOffset: 1 },
+        { patternIdx: 12, stringNum: 3, baseFretOffset: 3 },
+
+        { patternIdx: 13, stringNum: 2, baseFretOffset: 1 },
+        { patternIdx: 14, stringNum: 2, baseFretOffset: 2 },
+        { patternIdx: 14, stringNum: 2, baseFretOffset: 4 },
+
+        { patternIdx: 15, stringNum: 1, baseFretOffset: 1 },
+        { patternIdx: 16, stringNum: 1, baseFretOffset: 3 },
+        { patternIdx: 17, stringNum: 1, baseFretOffset: 4 },
+    ]
+}
+
+// CAGED E Shape Pentatonic
 export const PentatonicPattern1: IScalePattern = {
     minorRoot: {
         stringNum: 6,
@@ -52,6 +289,7 @@ export const PentatonicPattern1: IScalePattern = {
     ]
 }
 
+// CAGED D Shape Pentatonic
 export const PentatonicPattern2: IScalePattern = {
     minorRoot: {
         stringNum: 4,
@@ -79,6 +317,7 @@ export const PentatonicPattern2: IScalePattern = {
     ]
 }
 
+// CAGED C Shape Pentatonic
 export const PentatonicPattern3: IScalePattern = {
     minorRoot: {
         stringNum: 5,
@@ -106,6 +345,7 @@ export const PentatonicPattern3: IScalePattern = {
     ]
 }
 
+// CAGED A Shape Pentatonic
 export const PentatonicPattern4: IScalePattern = {
     minorRoot: {
         stringNum: 5,
@@ -133,6 +373,7 @@ export const PentatonicPattern4: IScalePattern = {
     ]
 }
 
+// CAGED G Shape Pentatonic
 export const PentatonicPattern5: IScalePattern = {
     minorRoot: {
         stringNum: 6,
