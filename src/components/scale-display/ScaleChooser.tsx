@@ -3,10 +3,10 @@ import * as React from 'react';
 import { Paper, List, ListItem, ListItemText, Collapse, Theme, WithStyles } from '@material-ui/core';
 import { ExpandMore, ExpandLess } from '@material-ui/icons';
 import { withStyles } from '@material-ui/core/styles';
-import { ScalePatternType } from 'src/music/guitar/ScalePattern';
+import { ScaleShape } from 'src/music/guitar/ScalePattern';
 
 export interface Props extends WithStyles<typeof styles> {
-    handleScaleChosen: (scaleType: ScalePatternType) => void
+    handleScaleChosen: (scaleType: ScaleShape) => void
 }
 
 export interface State {
@@ -38,7 +38,7 @@ class ScaleChooser extends React.Component<Props, State> {
         }
     }
 
-    handleScaleChosen = (patternType: ScalePatternType) => {
+    handleScaleChosen = (patternType: ScaleShape) => {
         this.setState({
             pentatonicOpen: false,
             majorOpen: false
@@ -75,27 +75,27 @@ class ScaleChooser extends React.Component<Props, State> {
                     <Collapse in={this.state.pentatonicOpen}>
                         <List>
                             <ListItem
-                                onClick={() => {this.handleScaleChosen(ScalePatternType.Pentatonic_1)}} 
+                                onClick={() => {this.handleScaleChosen(ScaleShape.Pentatonic_1)}} 
                                 button className={classes.nested}>
                                 <ListItemText primary="1 - E Shape" />
                             </ListItem>
                             <ListItem 
-                                onClick={() => {this.handleScaleChosen(ScalePatternType.Pentatonic_2)}} 
+                                onClick={() => {this.handleScaleChosen(ScaleShape.Pentatonic_2)}} 
                                 button className={classes.nested}>
                                 <ListItemText primary="2 - D Shape" />
                             </ListItem>
                             <ListItem 
-                                onClick={() => {this.handleScaleChosen(ScalePatternType.Pentatonic_3)}} 
+                                onClick={() => {this.handleScaleChosen(ScaleShape.Pentatonic_3)}} 
                                 button className={classes.nested}>
                                 <ListItemText primary="3 - C Shape" />
                             </ListItem>
                             <ListItem 
-                                onClick={() => {this.handleScaleChosen(ScalePatternType.Pentatonic_4)}} 
+                                onClick={() => {this.handleScaleChosen(ScaleShape.Pentatonic_4)}} 
                                 button className={classes.nested}>
                                 <ListItemText primary="4 - A Shape" />
                             </ListItem>
                             <ListItem 
-                                onClick={() => {this.handleScaleChosen(ScalePatternType.Pentatonic_5)}} 
+                                onClick={() => {this.handleScaleChosen(ScaleShape.Pentatonic_5)}} 
                                 button className={classes.nested}>
                                 <ListItemText primary="5 - G Shape" />
                             </ListItem>
@@ -109,27 +109,27 @@ class ScaleChooser extends React.Component<Props, State> {
                     <Collapse in={this.state.majorOpen}>
                         <List>
                             <ListItem
-                                onClick={() => {this.handleScaleChosen(ScalePatternType.Major_1)}} 
+                                onClick={() => {this.handleScaleChosen(ScaleShape.Major_1)}} 
                                 button className={classes.nested}>
                                 <ListItemText primary="1 - E Shape" />
                             </ListItem>
                             <ListItem 
-                                onClick={() => {this.handleScaleChosen(ScalePatternType.Major_2)}} 
+                                onClick={() => {this.handleScaleChosen(ScaleShape.Major_2)}} 
                                 button className={classes.nested}>
                                 <ListItemText primary="2 - D Shape" />
                             </ListItem>
                             <ListItem 
-                                onClick={() => {this.handleScaleChosen(ScalePatternType.Major_3)}} 
+                                onClick={() => {this.handleScaleChosen(ScaleShape.Major_3)}} 
                                 button className={classes.nested}>
                                 <ListItemText primary="3 - C Shape" />
                             </ListItem>
                             <ListItem 
-                                onClick={() => {this.handleScaleChosen(ScalePatternType.Major_4)}} 
+                                onClick={() => {this.handleScaleChosen(ScaleShape.Major_4)}} 
                                 button className={classes.nested}>
                                 <ListItemText primary="4 - A Shape" />
                             </ListItem>
                             <ListItem 
-                                onClick={() => {this.handleScaleChosen(ScalePatternType.Major_5)}} 
+                                onClick={() => {this.handleScaleChosen(ScaleShape.Major_5)}} 
                                 button className={classes.nested}>
                                 <ListItemText primary="5 - G Shape" />
                             </ListItem>

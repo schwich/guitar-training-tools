@@ -16,7 +16,12 @@ export interface IScalePattern {
     pattern: Array<IPatternNote>
 }
 
-export enum ScalePatternType {
+export enum ScaleShapeType {
+    Pentatonic,
+    Major
+}
+
+export enum ScaleShape {
     Pentatonic_1,
     Pentatonic_2,
     Pentatonic_3,
@@ -29,39 +34,70 @@ export enum ScalePatternType {
     Major_5
 }
 
-export function getPatternFromType(patternType: ScalePatternType): IScalePattern {
+export function getPatternFromIdx(shapeType: ScaleShapeType, patternIdx: number) {
+    if (shapeType === ScaleShapeType.Pentatonic) {
+        return PentatonicShapeGroup[patternIdx];
+    } else if (shapeType === ScaleShapeType.Major) {
+        return MajorScaleShapeGroup[patternIdx];
+    } else {
+        throw Error('Invalid Scale Shape Type')
+    }
+}
+
+export function getScaleTypeFromShape(shape: ScaleShape): ScaleShapeType {
+    switch (shape) {
+        case ScaleShape.Pentatonic_1:
+        case ScaleShape.Pentatonic_2:
+        case ScaleShape.Pentatonic_3:
+        case ScaleShape.Pentatonic_4:
+        case ScaleShape.Pentatonic_5:
+            return ScaleShapeType.Pentatonic;
+        break;
+
+        case ScaleShape.Major_1:
+        case ScaleShape.Major_2:
+        case ScaleShape.Major_3:
+        case ScaleShape.Major_4:
+        case ScaleShape.Major_5:
+            return ScaleShapeType.Major;
+        break;
+        
+    }
+}
+
+export function getPatternFromType(patternType: ScaleShape): IScalePattern {
     switch (patternType) {
         // pentatonic scales
-        case ScalePatternType.Pentatonic_1:
+        case ScaleShape.Pentatonic_1:
             return PentatonicPattern1;
         break;
-        case ScalePatternType.Pentatonic_2:
+        case ScaleShape.Pentatonic_2:
             return PentatonicPattern2;
         break;
-        case ScalePatternType.Pentatonic_3:
+        case ScaleShape.Pentatonic_3:
             return PentatonicPattern3;
         break;
-        case ScalePatternType.Pentatonic_4:
+        case ScaleShape.Pentatonic_4:
             return PentatonicPattern4;
         break;
-        case ScalePatternType.Pentatonic_5:
+        case ScaleShape.Pentatonic_5:
             return PentatonicPattern5;
         break;
 
         // major scales
-        case ScalePatternType.Major_1:
+        case ScaleShape.Major_1:
             return MajorScalePattern1;
         break;
-        case ScalePatternType.Major_2:
+        case ScaleShape.Major_2:
             return MajorScalePattern2;
         break;
-        case ScalePatternType.Major_3:
+        case ScaleShape.Major_3:
             return MajorScalePattern3;
         break;
-        case ScalePatternType.Major_4:
+        case ScaleShape.Major_4:
             return MajorScalePattern4;
         break;
-        case ScalePatternType.Major_5:
+        case ScaleShape.Major_5:
             return MajorScalePattern5;
         break;
 
@@ -261,6 +297,14 @@ export const MajorScalePattern5: IScalePattern = {
     ]
 }
 
+export const MajorScaleShapeGroup = [
+    MajorScalePattern1,
+    MajorScalePattern2,
+    MajorScalePattern3,
+    MajorScalePattern4,
+    MajorScalePattern5,
+]
+
 // CAGED E Shape Pentatonic
 export const PentatonicPattern1: IScalePattern = {
     minorRoot: {
@@ -400,3 +444,11 @@ export const PentatonicPattern5: IScalePattern = {
         { patternIdx: 11, stringNum: 1, baseFretOffset: 3 },
     ]
 }
+
+export const PentatonicShapeGroup = [
+    PentatonicPattern1,
+    PentatonicPattern2,
+    PentatonicPattern3,
+    PentatonicPattern4,
+    PentatonicPattern5,
+]

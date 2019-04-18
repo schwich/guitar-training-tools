@@ -6,7 +6,7 @@ import { generateFingeringFromKeyAndScalePattern } from '../music/guitar/Fingeri
 import { standardGuitarTuning, KeyNote, IFingering, KeyType, IKey, Accidental } from '../music/Music';
 import ScaleChooser from 'src/components/scale-display/ScaleChooser';
 import KeyChooser from 'src/components/guitar/KeyChooser';
-import { ScalePatternType, PentatonicPattern1, getPatternFromType } from 'src/music/guitar/ScalePattern';
+import { ScaleShape, PentatonicPattern1, getPatternFromType, ScaleShapeType, getScaleTypeFromShape, getPatternFromIdx } from 'src/music/guitar/ScalePattern';
 import PatternControl from 'src/components/scale-display/PatternControl';
 
 export interface Props {
@@ -17,8 +17,10 @@ export interface State {
     keyNote: KeyNote,
     keyType: KeyType,
     keyAccidental: Accidental
-    scalePatternType: ScalePatternType,
-    scaleFingering: Array<IFingering>
+    scaleShape: ScaleShape,
+    scaleShapeType: ScaleShapeType,
+    scaleFingering: Array<IFingering>,
+    scalePatternIdx: number
 }
 
 export default class GuitarScaleDisplay extends React.Component<Props, State> {
@@ -38,10 +40,12 @@ export default class GuitarScaleDisplay extends React.Component<Props, State> {
             keyNote: KeyNote.C,
             keyType: KeyType.Major,
             keyAccidental: Accidental.Natural,
-            scalePatternType: ScalePatternType.Pentatonic_1,
+            scaleShapeType: ScaleShapeType.Pentatonic,
+            scaleShape: ScaleShape.Pentatonic_1,
             scaleFingering: generateFingeringFromKeyAndScalePattern(
                 key, PentatonicPattern1, standardGuitarTuning, this.numFrets
-            )
+            ),
+            scalePatternIdx: 0
         }
     }
 
@@ -54,7 +58,7 @@ export default class GuitarScaleDisplay extends React.Component<Props, State> {
         this.setState({ 
             keyType: type,
             scaleFingering: generateFingeringFromKeyAndScalePattern(
-                key, getPatternFromType(this.state.scalePatternType), standardGuitarTuning, this.numFrets
+                key, getPatternFromType(this.state.scaleShape), standardGuitarTuning, this.numFrets
             )
         });
     }
@@ -68,12 +72,12 @@ export default class GuitarScaleDisplay extends React.Component<Props, State> {
         this.setState({ 
             keyNote: note,
             scaleFingering: generateFingeringFromKeyAndScalePattern(
-                key, getPatternFromType(this.state.scalePatternType), standardGuitarTuning, this.numFrets
+                key, getPatternFromType(this.state.scaleShape), standardGuitarTuning, this.numFrets
             )
         });
     }
 
-    handleScaleChosen = (scalePatternType: ScalePatternType) => {
+    handleScaleChosen = (scaleShape: ScaleShape) => {
         let key: IKey = {
             note: this.state.keyNote,
             accidental: this.state.keyAccidental,
@@ -81,9 +85,28 @@ export default class GuitarScaleDisplay extends React.Component<Props, State> {
         }
 
         this.setState({ 
-            scalePatternType,
+            scaleShape,
+            scaleShapeType: getScaleTypeFromShape(scaleShape),
             scaleFingering: generateFingeringFromKeyAndScalePattern(
-                key, getPatternFromType(scalePatternType), standardGuitarTuning, this.numFrets
+                key, getPatternFromType(scaleShape), standardGuitarTuning, this.numFrets
+            )
+        });
+    }
+
+    handleScalePatternIdxChanged = (idx: number) => {
+        let key: IKey = {
+            note: this.state.keyNote,
+            accidental: this.state.keyAccidental,
+            type: this.state.keyType
+        }
+
+        // what is the next pattern based on idx?
+        let pattern = getPatternFromIdx(this.state.scaleShapeType, idx);
+
+        this.setState({ 
+            scalePatternIdx: idx,
+            scaleFingering: generateFingeringFromKeyAndScalePattern(
+                key, pattern, standardGuitarTuning, this.numFrets
             )
         });
     }
@@ -106,7 +129,11 @@ export default class GuitarScaleDisplay extends React.Component<Props, State> {
                     </div>
 
                     <div>
-                        <PatternControl />
+                        <PatternControl 
+                            scalePatternIdxChanged={this.handleScalePatternIdxChanged}
+                            scalePatternIdx={this.state.scalePatternIdx}
+                            scalePatternType={this.state.scaleShape}
+                        />
                     </div>
  
                 </div>
