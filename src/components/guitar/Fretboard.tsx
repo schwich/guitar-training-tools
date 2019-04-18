@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { createChromaticSequence, generateNoteSequenceFromFingering, IFingering, INote } from 'src/music/Music';
+import { createChromaticSequence, generateNoteSequenceFromFingering, IFingering, INote, standardGuitarTuning } from 'src/music/Music';
 
 export interface Props {
     height: number,
@@ -84,10 +84,10 @@ export default class Fretboard extends React.Component<Props, object> {
                     this.props.showDotInlays
                     ? (
                         <FretInlays
-                        numFrets={numFrets}
-                        startX={svgWidthBucket}
-                        startY={height-(svgBottomMargin/2)}
-                        fretSpacing={svgWidthBucket}
+                            numFrets={numFrets}
+                            startX={svgWidthBucket}
+                            startY={height-(svgBottomMargin/2)}
+                            fretSpacing={svgWidthBucket}
                         />
                     )
                     : (
@@ -241,7 +241,7 @@ function FretInlays(props: FretInlaysProps) {
                 // handle double inlays for octave
                 if (idx === 12 || idx === 24) {
                     return (
-                        <React.Fragment>
+                        <React.Fragment key={idx}>
                             <circle 
                                 key={idx} 
                                 r={10}
@@ -251,7 +251,7 @@ function FretInlays(props: FretInlaysProps) {
                                 strokeWidth="2"
                             />  
                             <circle 
-                                key={idx+0.5} 
+                                key={idx+1} 
                                 r={10}
                                 cx={start + (idx * fretSpacing) + 12}
                                 cy={startY}
@@ -401,7 +401,7 @@ function FretNotes(props: FretNotesProps) {
 
                 let noteSequence: Array<INote>;
                 if (fingering) {
-                    noteSequence = generateNoteSequenceFromFingering(stringIdx + 1, numFrets + 1, fingering);
+                    noteSequence = generateNoteSequenceFromFingering(stringIdx + 1, numFrets + 1, fingering, standardGuitarTuning);
                 } else {
                     noteSequence = createChromaticSequence(guitarTuning[stringIdx], numFrets+1) // account for 12 frets + open string
                 }

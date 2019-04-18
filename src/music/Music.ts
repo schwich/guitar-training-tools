@@ -95,12 +95,14 @@ export const standardGuitarTuning = [
  * @param fingering what notes to include in the sequence
  */
 export function generateNoteSequenceFromFingering(
-    stringNum: number, length: number, fingering: Array<IFingering>): Array<INote> {
+    stringNum: number, length: number, fingering: Array<IFingering>, guitarTuning: string[]
+    ): Array<INote> {
     let notesInString = fingering.filter(note => {
         return stringNum === note.stringNum; 
     })
 
     let noteSequence = [];
+    let chromaticIdx = getChromaticArrIdx(guitarTuning[stringNum-1]); // string number to array idx
     for (let i = 0; i < length; i++) { // push #(length) of notes to noteSequence
         let frettedNote = notesInString.find(note => {
             return note.fret === i;
@@ -110,14 +112,16 @@ export function generateNoteSequenceFromFingering(
             noteSequence.push({
                 display: true,
                 fingerNum: frettedNote.fingerNum,
-                ...notes[i % 12] // make sure to create a new object from the notes
+                ...notes[chromaticIdx] // make sure to create a new object from the notes
             })
         } else {
             noteSequence.push({
                 display: false,
-                ...notes[i % 12]
+                ...notes[chromaticIdx]
             })
         }
+
+        chromaticIdx = (chromaticIdx + 1) % 12;
     }
 
     return noteSequence;
@@ -224,6 +228,6 @@ export function getRandomChromaticNote() {
     }
 }
 
-function getChromaticArrIdx(note :string) {
+function getChromaticArrIdx(note: string) {
     return getNoteChromaticIndex(note) - 1;
 }
