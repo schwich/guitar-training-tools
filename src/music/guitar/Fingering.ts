@@ -77,14 +77,16 @@ export function generateFingeringFromKeyAndScalePattern(
 
     switch (type) {
         case KeyType.Major:
-            fretBaseline -= 3;
-            if (fretBaseline < 0) {
-                fretBaseline += 12;
-            }
+            fretBaseline -= majorRoot.offsetFromBaseFret
         break;
 
         case KeyType.Minor: 
+            fretBaseline -= minorRoot.offsetFromBaseFret
         break;
+    }
+
+    if (fretBaseline < 1) {
+        fretBaseline += 12;
     }
     
     
@@ -95,5 +97,6 @@ export function generateFingeringFromKeyAndScalePattern(
             fret: fretBaseline + p.baseFretOffset
         });
     }
+    
     return fingering;
 }
