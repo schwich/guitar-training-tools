@@ -61,8 +61,9 @@ export enum KeyNote {
 }
 
 export enum Accidental {
-    Sharp,
-    Flat
+    Sharp = "♯",
+    Flat = "♭",
+    Natural = "♮"
 }
 
 export enum KeyType {

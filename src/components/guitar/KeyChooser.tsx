@@ -1,16 +1,17 @@
 import * as React from 'react';
 
 import { Paper, Button } from '@material-ui/core';
-import { KeyType, KeyNote } from 'src/music/Music';
+import { KeyType, KeyNote, Accidental } from 'src/music/Music';
 
 export interface Props {
     keyTypeChanged: (keyType: KeyType) => void,
-    keyNoteChanged: (keyNote: KeyNote) => void
+    keyNoteChanged: (keyNote: KeyNote, accidental: Accidental) => void
 }
 
 export interface State {
     keyType: KeyType,
-    keyNote: KeyNote
+    keyNote: KeyNote,
+    keyAccidental: Accidental
 }
 
 export default class KeyChooser extends React.Component<Props, State> {
@@ -20,13 +21,14 @@ export default class KeyChooser extends React.Component<Props, State> {
 
         this.state = {
             keyType: KeyType.Major,
-            keyNote: KeyNote.C
+            keyNote: KeyNote.C,
+            keyAccidental: Accidental.Natural
         }
     }
 
-    handleKeyNoteChanged = (keyNote: KeyNote) => {
+    handleKeyNoteChanged = (keyNote: KeyNote, accidental: Accidental) => {
         this.setState({ keyNote });
-        this.props.keyNoteChanged(keyNote);
+        this.props.keyNoteChanged(keyNote, accidental);
     }
 
     handleKeyTypeChanged = (keyType: KeyType) => {
@@ -36,7 +38,7 @@ export default class KeyChooser extends React.Component<Props, State> {
 
     render() {
         return (
-            <Paper style={{ maxWidth: 200, padding: 5}}>
+            <Paper style={{ padding: 10 }}>
                 <div>
                     <Button 
                         style={{ margin: 5 }}
@@ -55,35 +57,55 @@ export default class KeyChooser extends React.Component<Props, State> {
                         Minor
                     </Button>
                 </div>
-                <div style={{padding: 5}}>
+                <div style={{ maxWidth: 300, padding: 5}}>
                     <Button 
-                        color={ this.state.keyNote === KeyNote.F ? 'primary' : 'default'}
+                        color={ this.state.keyNote === KeyNote.F && this.state.keyAccidental === Accidental.Natural ? 'primary' : 'default'}
                         style={{margin: 2}} variant="contained" 
-                        onClick={() => this.handleKeyNoteChanged(KeyNote.F)}>F</Button>
+                        onClick={() => this.handleKeyNoteChanged(KeyNote.F, Accidental.Natural)}>F</Button>
                     <Button 
-                        color={ this.state.keyNote === KeyNote.C ? 'primary' : 'default'}
+                        color={ this.state.keyNote === KeyNote.C && this.state.keyAccidental === Accidental.Natural ? 'primary' : 'default'}
                         style={{margin: 2}} variant="contained" 
-                        onClick={() => this.handleKeyNoteChanged(KeyNote.C)}>C</Button>
+                        onClick={() => this.handleKeyNoteChanged(KeyNote.C, Accidental.Natural)}>C</Button>
                     <Button 
-                        color={ this.state.keyNote === KeyNote.G ? 'primary' : 'default'}
+                        color={ this.state.keyNote === KeyNote.G && this.state.keyAccidental === Accidental.Natural ? 'primary' : 'default'}
                         style={{margin: 2}} variant="contained" 
-                        onClick={() => this.handleKeyNoteChanged(KeyNote.G)}>G</Button>
+                        onClick={() => this.handleKeyNoteChanged(KeyNote.G, Accidental.Natural)}>G</Button>
                     <Button 
-                        color={ this.state.keyNote === KeyNote.D ? 'primary' : 'default'}
+                        color={ this.state.keyNote === KeyNote.D && this.state.keyAccidental === Accidental.Natural ? 'primary' : 'default'}
                         style={{margin: 2}} variant="contained" 
-                        onClick={() => this.handleKeyNoteChanged(KeyNote.D)}>D</Button>
+                        onClick={() => this.handleKeyNoteChanged(KeyNote.D, Accidental.Natural)}>D</Button>
                     <Button 
-                        color={ this.state.keyNote === KeyNote.A ? 'primary' : 'default'}
+                        color={ this.state.keyNote === KeyNote.A && this.state.keyAccidental === Accidental.Natural ? 'primary' : 'default'}
                         style={{margin: 2}} variant="contained" 
-                        onClick={() => this.handleKeyNoteChanged(KeyNote.A)}>A</Button>
+                        onClick={() => this.handleKeyNoteChanged(KeyNote.A, Accidental.Natural)}>A</Button>
                     <Button 
-                        color={ this.state.keyNote === KeyNote.E ? 'primary' : 'default'}
+                        color={ this.state.keyNote === KeyNote.E && this.state.keyAccidental === Accidental.Natural ? 'primary' : 'default'}
                         style={{margin: 2}} variant="contained" 
-                        onClick={() => this.handleKeyNoteChanged(KeyNote.E)}>E</Button>
+                        onClick={() => this.handleKeyNoteChanged(KeyNote.E, Accidental.Natural)}>E</Button>
                     <Button 
-                        color={ this.state.keyNote === KeyNote.B ? 'primary' : 'default'}
+                        color={ this.state.keyNote === KeyNote.B && this.state.keyAccidental === Accidental.Natural ? 'primary' : 'default'}
                         style={{margin: 2}} variant="contained" 
-                        onClick={() => this.handleKeyNoteChanged(KeyNote.B)}>B</Button>
+                        onClick={() => this.handleKeyNoteChanged(KeyNote.B, Accidental.Natural)}>B</Button>
+                    <Button 
+                        color={ this.state.keyNote === KeyNote.G && this.state.keyAccidental === Accidental.Flat ? 'primary' : 'default'}
+                        style={{margin: 2}} variant="contained" 
+                        onClick={() => this.handleKeyNoteChanged(KeyNote.G, Accidental.Flat)}>{`G${Accidental.Flat}`}</Button>
+                    <Button 
+                        color={ this.state.keyNote === KeyNote.D && this.state.keyAccidental === Accidental.Flat ? 'primary' : 'default'}
+                        style={{margin: 2}} variant="contained" 
+                        onClick={() => this.handleKeyNoteChanged(KeyNote.D, Accidental.Flat)}>{`D${Accidental.Flat}`}</Button>
+                    <Button 
+                        color={ this.state.keyNote === KeyNote.A && this.state.keyAccidental === Accidental.Flat ? 'primary' : 'default'}
+                        style={{margin: 2}} variant="contained" 
+                        onClick={() => this.handleKeyNoteChanged(KeyNote.A, Accidental.Flat)}>{`A${Accidental.Flat}`}</Button>
+                    <Button 
+                        color={ this.state.keyNote === KeyNote.E && this.state.keyAccidental === Accidental.Flat ? 'primary' : 'default'}
+                        style={{margin: 2}} variant="contained" 
+                        onClick={() => this.handleKeyNoteChanged(KeyNote.E, Accidental.Flat)}>{`E${Accidental.Flat}`}</Button>
+                    <Button 
+                        color={ this.state.keyNote === KeyNote.B && this.state.keyAccidental === Accidental.Flat ? 'primary' : 'default'}
+                        style={{margin: 2}} variant="contained" 
+                        onClick={() => this.handleKeyNoteChanged(KeyNote.B, Accidental.Flat)}>{`B${Accidental.Flat}`}</Button>
                 </div>
             </Paper>
         )

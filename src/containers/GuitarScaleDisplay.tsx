@@ -16,6 +16,7 @@ export interface Props {
 export interface State {
     keyNote: KeyNote,
     keyType: KeyType,
+    keyAccidental: Accidental
     scalePatternType: ScalePatternType,
     scaleFingering: Array<IFingering>
 }
@@ -29,13 +30,14 @@ export default class GuitarScaleDisplay extends React.Component<Props, State> {
 
         let key: IKey = {
             note: KeyNote.C,
-            accidental: Accidental.Sharp,
+            accidental: Accidental.Natural,
             type: KeyType.Major
         }
 
         this.state = {
             keyNote: KeyNote.C,
             keyType: KeyType.Major,
+            keyAccidental: Accidental.Natural,
             scalePatternType: ScalePatternType.Pentatonic_1,
             scaleFingering: generateFingeringFromKeyAndScalePattern(
                 key, PentatonicPattern1, standardGuitarTuning, this.numFrets
@@ -46,7 +48,7 @@ export default class GuitarScaleDisplay extends React.Component<Props, State> {
     handleKeyTypeChanged = (type: KeyType) => {
         let key: IKey = {
             note: this.state.keyNote,
-            accidental: Accidental.Sharp,
+            accidental: this.state.keyAccidental,
             type
         }
         this.setState({ 
@@ -57,10 +59,10 @@ export default class GuitarScaleDisplay extends React.Component<Props, State> {
         });
     }
 
-    handleKeyNoteChanged = (note: KeyNote) => {
+    handleKeyNoteChanged = (note: KeyNote, accidental: Accidental) => {
         let key: IKey = {
             note,
-            accidental: Accidental.Sharp,
+            accidental,
             type: this.state.keyType
         }
         this.setState({ 
@@ -74,7 +76,7 @@ export default class GuitarScaleDisplay extends React.Component<Props, State> {
     handleScaleChosen = (scalePatternType: ScalePatternType) => {
         let key: IKey = {
             note: this.state.keyNote,
-            accidental: Accidental.Sharp,
+            accidental: this.state.keyAccidental,
             type: this.state.keyType
         }
 

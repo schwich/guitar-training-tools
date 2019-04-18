@@ -1,4 +1,4 @@
-import { IFingering, NoteBackgroundSymbol, IKey, KeyType, createChromaticSequence } from '../Music';
+import { IFingering, NoteBackgroundSymbol, IKey, KeyType, createChromaticSequence, Accidental } from '../Music';
 import { IScalePattern } from './ScalePattern';
 
 // Bb Minor
@@ -46,7 +46,7 @@ export function generateFingeringFromKeyAndScalePattern(
     stringLength: number
     ): Array<IFingering> {
     let { minorRoot, majorRoot, pattern } = scalePattern;
-    let { note, type } = key;
+    let { note, type, accidental } = key;
 
     // pivot off of major or minor root depending on key
     let rootString;
@@ -78,7 +78,12 @@ export function generateFingeringFromKeyAndScalePattern(
     // define fret baseline
     let fretBaseline = 0;
     for (let i = 0; i < stringNotes.length; i++) {
-        if (stringNotes[i].label.includes(note)) {
+        if (accidental === Accidental.Sharp || accidental === Accidental.Flat) {
+            if (stringNotes[i].label.includes(`${note}${accidental}`)) {
+                fretBaseline = i;
+                break;
+            }
+        } else if (stringNotes[i].label.includes(note)) {
             fretBaseline = i;
             break;
         }
