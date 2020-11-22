@@ -17,6 +17,7 @@ export interface Props {
   showDotInlays?: boolean;
   showFretNumbers?: boolean;
   fingerings?: Array<IFingering>;
+  noteSelection?: string[]; // TODO Array<INote>
   hideNoteNames?: boolean;
   portraitOrientation?: boolean;
   handleNoteClicked?: (stringNum: number, noteClicked: string[]) => void;
@@ -27,6 +28,7 @@ export default class Fretboard extends React.Component<Props, object> {
     super(props);
   }
 
+  // todo still need?
   onNoteClicked = (stringNum: number, note?: string[]) => {
     if (note && this.props.handleNoteClicked) {
       this.props.handleNoteClicked(stringNum, note);
@@ -46,31 +48,33 @@ export default class Fretboard extends React.Component<Props, object> {
       portraitOrientation,
     } = this.props;
 
+    // todo
     if (portraitOrientation) {
       // what needs to change?
     }
 
-    const svgTopMargin = 20; // todo calc depending on title or not
-    const svgBottomMargin = 40; // calc from dotInlays height
-    const noteRadius = 15; // todo should calc from svg height/width
-    const fretHeight = height - svgTopMargin - svgBottomMargin;
-    const svgWidthBucket = Math.ceil(width / (numFrets + 2)); // evenly divide svg's width so the frets are even
-    const stringSpacing = Math.ceil(fretHeight / numStrings); // evenly divide svg's height so the strings are spaced evenly
-    const stringLength = svgWidthBucket + svgWidthBucket * numFrets; // make sure that ends of the strings touch the ends of the frets
-    const svgHeightBucket = Math.ceil(height / (numStrings + 1));
+    const noteRadius = 15;
+    const topGutter = noteRadius * 2;
+    const bottomGutter = noteRadius * 2;
+    const fretWidth = 5;
+    const fretHeight = height - topGutter - bottomGutter;
+    const fretBoxWidth = width / (numFrets + 2); // evenly divide svg's width so the frets are even
+    const fretBoxHeight = height / (numStrings + 1);
+    const stringLength = fretBoxWidth + fretBoxWidth * numFrets; // make sure that ends of the strings touch the ends of the frets
+
+    const stringSpacing = height / (numStrings + 1);
 
     let fretLabels;
     if (this.props.showFretNumbers) {
       fretLabels = (
         <FretLabels
-          startX={0}
-          startY={10}
+          startY={0.5 * topGutter}
           numFrets={numFrets}
-          fretWidth={svgWidthBucket}
+          fretWidth={fretBoxWidth}
         />
       );
     } else {
-      fretLabels = "";
+      fretLabels = null;
     }
 
     let dotInlays;
@@ -78,30 +82,32 @@ export default class Fretboard extends React.Component<Props, object> {
       dotInlays = (
         <FretInlays
           numFrets={numFrets}
-          startX={svgWidthBucket}
-          startY={height - svgBottomMargin / 2}
-          fretSpacing={svgWidthBucket}
+          startX={fretBoxWidth}
+          startY={height - bottomGutter / 2}
+          fretSpacing={fretBoxWidth}
+          fretWidth={fretWidth}
+          inlayRadius={noteRadius * 0.33}
         />
       );
     } else {
-      dotInlays = "";
+      dotInlays = null;
     }
 
     let fingeringsDisplay;
     if (fingerings) {
       fingeringsDisplay = (
         <FretBarres
-          stringStartX={svgWidthBucket}
-          stringStartY={svgHeightBucket}
+          stringStartX={fretBoxWidth}
+          stringStartY={fretBoxHeight}
           numStrings={numStrings}
           numFrets={numFrets}
           stringSpacing={stringSpacing}
-          fretSpacing={svgWidthBucket}
+          fretSpacing={fretBoxWidth}
           fingerings={fingerings}
         />
       );
     } else {
-      fingeringsDisplay = "";
+      fingeringsDisplay = null;
     }
 
     return (
@@ -109,30 +115,32 @@ export default class Fretboard extends React.Component<Props, object> {
         {fretLabels}
 
         <Frets
-          startX={svgWidthBucket}
-          startY={svgTopMargin}
+          startX={fretBoxWidth}
+          startY={topGutter}
           fretHeight={fretHeight}
-          fretSpacing={svgWidthBucket}
+          fretWidth={fretWidth}
+          fretSpacing={fretBoxWidth}
           numFrets={numFrets}
         />
 
         {dotInlays}
 
         <GuitarStrings
-          startX={svgWidthBucket}
-          startY={svgHeightBucket}
+          startX={fretBoxWidth}
+          startY={fretBoxHeight}
           numStrings={numStrings}
           spacing={stringSpacing}
           stringLength={stringLength}
         />
 
         <FretNotes
-          stringStartX={svgWidthBucket}
-          stringStartY={svgHeightBucket}
+          stringStartX={fretBoxWidth}
+          stringStartY={fretBoxHeight}
           numStrings={numStrings}
           numFrets={numFrets}
           stringSpacing={stringSpacing}
-          fretSpacing={svgWidthBucket}
+          fretSpacing={fretBoxWidth}
+          fretWidth={fretWidth}
           noteRadius={noteRadius}
           guitarTuning={tuning}
           hideNoteNames={hideNoteNames}
@@ -150,14 +158,20 @@ interface FretsProps {
   startX: number;
   startY: number;
   fretHeight: number;
+  fretWidth: number;
   fretSpacing: number;
   numFrets: number;
 }
 
 function Frets(props: FretsProps) {
-  const { startX, startY, fretHeight, fretSpacing, numFrets } = props;
-
-  const fretWidth = 5; // todo maybe make this configurable?
+  const {
+    startX,
+    startY,
+    fretHeight,
+    fretWidth,
+    fretSpacing,
+    numFrets,
+  } = props;
 
   return (
     <g>
@@ -199,12 +213,12 @@ function Frets(props: FretsProps) {
 interface FretLabelsProps {
   numFrets: number;
   fretWidth: number;
-  startX: number;
   startY: number;
+  fontSize?: number;
 }
 
 function FretLabels(props: FretLabelsProps) {
-  let { numFrets, fretWidth, startX, startY } = props;
+  let { numFrets, fretWidth, startY, fontSize } = props;
 
   return (
     <g>
@@ -212,9 +226,9 @@ function FretLabels(props: FretLabelsProps) {
         return (
           <text
             key={idx}
-            x={startX + fretWidth * (idx + 2)}
+            x={fretWidth * (idx + 2)} // +2 because 0 is before nut, 1 is nut
             y={startY}
-            fontSize="12"
+            fontSize={fontSize || 12}
           >
             {idx + 1}
           </text>
@@ -227,23 +241,25 @@ function FretLabels(props: FretLabelsProps) {
 interface FretInlaysProps {
   numFrets: number;
   fretSpacing: number;
+  fretWidth: number;
   startX: number;
   startY: number;
+  inlayRadius: number;
   type?: string;
 }
 
+// todo allow more configuration
 function FretInlays(props: FretInlaysProps) {
-  let {
-    // numFrets,
-    fretSpacing,
-    startX,
-    startY,
-  } = props;
+  let { numFrets, fretSpacing, fretWidth, startX, startY, inlayRadius } = props;
 
-  const start = startX - fretSpacing / 2.2;
+  // account for the fret width because the fret spacing is only from the start of one fret to another, but frets are rectangles
+  const start = startX - (fretSpacing - fretWidth / 2) / 2;
 
-  // use num frets to generate
-  const inlayPositions = [3, 5, 7, 9, 12, 15, 17, 19, 21, 24];
+  const possibleInlayPositions = [3, 5, 7, 9, 12, 15, 17, 19, 21, 24];
+  const whereToSlice = possibleInlayPositions.findIndex(
+    (idx) => idx > numFrets
+  );
+  const inlayPositions = possibleInlayPositions.slice(0, whereToSlice);
 
   return (
     <g>
@@ -254,7 +270,7 @@ function FretInlays(props: FretInlaysProps) {
             <React.Fragment key={idx}>
               <circle
                 key={idx}
-                r={10}
+                r={inlayRadius}
                 cx={start + idx * fretSpacing - 12}
                 cy={startY}
                 fill="gray"
@@ -262,7 +278,7 @@ function FretInlays(props: FretInlaysProps) {
               />
               <circle
                 key={idx + 1}
-                r={10}
+                r={inlayRadius}
                 cx={start + idx * fretSpacing + 12}
                 cy={startY}
                 fill="gray"
@@ -275,7 +291,7 @@ function FretInlays(props: FretInlaysProps) {
         return (
           <circle
             key={idx}
-            r={10}
+            r={inlayRadius}
             cx={start + idx * fretSpacing}
             cy={startY}
             fill="gray"
@@ -294,6 +310,7 @@ interface FretBarresProps {
   numStrings: number;
   stringSpacing: number;
   fretSpacing: number;
+  displayWidth?: number;
   fingerings: Array<IFingering>;
 }
 
@@ -307,7 +324,7 @@ interface BarreDimensions {
 function FretBarres(props: FretBarresProps) {
   const { stringStartY, stringSpacing, fretSpacing, fingerings } = props;
 
-  const barreWidth = 10;
+  const barreWidth = props.displayWidth || 10;
 
   // generate a list of barres to render, with their dimensions
 
@@ -379,6 +396,7 @@ interface FretNotesProps {
   numStrings: number;
   stringSpacing: number;
   fretSpacing: number;
+  fretWidth: number;
   noteRadius: number;
   guitarTuning: string[];
   onNoteClicked?: (stringNum: number, noteClicked: string[]) => void;
@@ -394,6 +412,7 @@ function FretNotes(props: FretNotesProps) {
     numStrings,
     stringSpacing,
     fretSpacing,
+    fretWidth,
     noteRadius,
     guitarTuning,
     onNoteClicked,
@@ -403,9 +422,7 @@ function FretNotes(props: FretNotesProps) {
   const hideNoteNames = props.hideNoteNames || false;
 
   // calculate note start X (to account for open string's note, which is behind the nut)
-  const noteStartX = stringStartX - Math.ceil(fretSpacing / 2.25);
-
-  // TODO calculate note radius from numfrets, fretboardWidth, fretboardHeight, and numStrings
+  const noteStartX = stringStartX - (fretSpacing - fretWidth / 2) / 2;
 
   return (
     <g>
