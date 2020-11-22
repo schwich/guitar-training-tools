@@ -59,18 +59,54 @@ export default class Fretboard extends React.Component<Props, object> {
     const stringLength = svgWidthBucket + svgWidthBucket * numFrets; // make sure that ends of the strings touch the ends of the frets
     const svgHeightBucket = Math.ceil(height / (numStrings + 1));
 
+    let fretLabels;
+    if (this.props.showFretNumbers) {
+      fretLabels = (
+        <FretLabels
+          startX={0}
+          startY={10}
+          numFrets={numFrets}
+          fretWidth={svgWidthBucket}
+        />
+      );
+    } else {
+      fretLabels = "";
+    }
+
+    let dotInlays;
+    if (this.props.showDotInlays) {
+      dotInlays = (
+        <FretInlays
+          numFrets={numFrets}
+          startX={svgWidthBucket}
+          startY={height - svgBottomMargin / 2}
+          fretSpacing={svgWidthBucket}
+        />
+      );
+    } else {
+      dotInlays = "";
+    }
+
+    let fingeringsDisplay;
+    if (fingerings) {
+      fingeringsDisplay = (
+        <FretBarres
+          stringStartX={svgWidthBucket}
+          stringStartY={svgHeightBucket}
+          numStrings={numStrings}
+          numFrets={numFrets}
+          stringSpacing={stringSpacing}
+          fretSpacing={svgWidthBucket}
+          fingerings={fingerings}
+        />
+      );
+    } else {
+      fingeringsDisplay = "";
+    }
+
     return (
       <svg width={width} height={height}>
-        {this.props.showFretNumbers ? (
-          <FretLabels
-            startX={0}
-            startY={10}
-            numFrets={numFrets}
-            fretWidth={svgWidthBucket}
-          />
-        ) : (
-          "" // don't show
-        )}
+        {fretLabels}
 
         <Frets
           startX={svgWidthBucket}
@@ -80,16 +116,7 @@ export default class Fretboard extends React.Component<Props, object> {
           numFrets={numFrets}
         />
 
-        {this.props.showDotInlays ? (
-          <FretInlays
-            numFrets={numFrets}
-            startX={svgWidthBucket}
-            startY={height - svgBottomMargin / 2}
-            fretSpacing={svgWidthBucket}
-          />
-        ) : (
-          "" // don't show
-        )}
+        {dotInlays}
 
         <GuitarStrings
           startX={svgWidthBucket}
@@ -113,19 +140,7 @@ export default class Fretboard extends React.Component<Props, object> {
           fingering={fingerings}
         />
 
-        {fingerings ? (
-          <FretBarres
-            stringStartX={svgWidthBucket}
-            stringStartY={svgHeightBucket}
-            numStrings={numStrings}
-            numFrets={numFrets}
-            stringSpacing={stringSpacing}
-            fretSpacing={svgWidthBucket}
-            fingerings={fingerings}
-          />
-        ) : (
-          "" // don't render
-        )}
+        {fingeringsDisplay}
       </svg>
     );
   }
