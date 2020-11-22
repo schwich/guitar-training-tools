@@ -54,7 +54,7 @@ export default class GuitarFretboardTrainer extends React.Component<
       gameInstructionTxt: "",
       showFretLabels: false,
       showInlays: true,
-      includeAccidentals: true
+      includeAccidentals: true,
     };
   }
 
@@ -106,8 +106,8 @@ export default class GuitarFretboardTrainer extends React.Component<
   };
 
   handleIncludeAccidentals = (checked: boolean) => {
-    this.setState({ includeAccidentals: checked})
-  }
+    this.setState({ includeAccidentals: checked });
+  };
 
   handleDisplayInlaysToggle = (checked: boolean) => {
     this.setState({ showInlays: checked });
