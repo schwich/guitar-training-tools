@@ -94,6 +94,7 @@ export const standardGuitarTuning = [
  * @param stringNum what string are we generating a sequence for
  * @param length number of notes to generate in the sequence, usually the total number of frets
  * @param fingering what notes to include in the sequence
+ * @param guitarTuning
  */
 export function generateNoteSequenceFromFingering(
     stringNum: number, length: number, fingering: Array<IFingering>, guitarTuning: string[]
@@ -178,11 +179,9 @@ export function createScale(tonic: string, type: string) {
     switch(type) {
         case 'Major':
             return createNoteSequenceFromIntervalPattern(tonic, 'WWHWWWH')
-        break;
 
         case 'Minor':
             return createNoteSequenceFromIntervalPattern(tonic, 'WHWWHWW')
-        break;
 
         default:
             throw new Error();
@@ -219,14 +218,22 @@ export function getNoteChromaticIndex(note: string) {
     })[0].chromaticIdx
 }
 
-export function getRandomChromaticNote() {
-    let noteIdx = getRandomInt(0, 12);
-    let randomNote = notes[noteIdx]
-    if (randomNote.enharmonic) {
-        return randomNote.label[getRandomInt(0, 2)]
-    } else {
-        return randomNote.label[0]
+export function getRandomChromaticNote(includeAccidentals=true) {
+    let isDone= false;
+    while (! isDone) {
+        let noteIdx = getRandomInt(0, 12);
+        let randomNote = notes[noteIdx]
+        if (randomNote.enharmonic) {
+            if (! includeAccidentals) continue;
+            isDone = true;
+            return randomNote.label[getRandomInt(0, 2)]
+        } else {
+            isDone = true;
+            return randomNote.label[0]
+        }
     }
+    // should never get here
+    return notes[0].label[0];
 }
 
 function getChromaticArrIdx(note: string) {

@@ -11,6 +11,7 @@ export interface Props {
     handleStringsSelected: (stringsSelected: number[]) => void,
     handleDisplayInlaysToggle: (checked: boolean) => void,
     handleDisplayFretNumbersToggle: (checked: boolean) => void
+    handleIncludeAccidentals: (checked: boolean) => void
 }
 
 export interface State {
@@ -19,7 +20,8 @@ export interface State {
     numFretsChosen: number,
     stringsEnabled: number[],
     showFretLabels: boolean,
-    showFretInlays: boolean
+    showFretInlays: boolean,
+    includeAccidentals: boolean,
 }
 
 export default class FretboardControlPanel extends React.Component<Props, State> {
@@ -49,7 +51,8 @@ export default class FretboardControlPanel extends React.Component<Props, State>
             numFretsChosen: 12,
             stringsEnabled: [0, 1, 2, 3, 4, 5], // array indexes
             showFretInlays: true,
-            showFretLabels: false
+            showFretLabels: false,
+            includeAccidentals: true
         }
     }
 
@@ -75,6 +78,11 @@ export default class FretboardControlPanel extends React.Component<Props, State>
             this.props.handleStringsSelected(newStringsEnabled.map(idx => idx + 1)) // convert from arr index to string number
         }
         
+    }
+
+    handleIncludeAccidentals = (event: React.ChangeEvent<HTMLInputElement>) => {
+        this.props.handleIncludeAccidentals(event.target.checked);
+        this.setState({ includeAccidentals: event.target.checked });
     }
 
     handleNumFretsSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -145,6 +153,16 @@ export default class FretboardControlPanel extends React.Component<Props, State>
                         />                  
 
                     </div>
+
+                   <div id="gameControlPanelIncludeAccidentals">
+                       <FormControlLabel control={
+                           <Switch
+                               checked={this.state.includeAccidentals}
+                               onChange={this.handleIncludeAccidentals}
+                           />
+                       } label="Include Accidentals" />
+                   </div>
+
                     <div id="gameControlPanelStringsToGuessControl">
                     
                         <FormControl style={{minWidth: 200, maxWidth: 300}}>

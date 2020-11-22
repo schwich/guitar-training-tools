@@ -24,22 +24,25 @@ export default class GameController {
     private totalGuesses: number;
     private lastRandomNote: string;
     private stringsEnabled: number[];
+    private accidentalsEnabled : boolean;
 
     constructor() {
         this.currentAnswer = '';
         this.lastRandomNote = '';
         this.stringsEnabled = [1, 2, 3, 4, 5, 6];
+        this.accidentalsEnabled = true;
     }
 
-    public startNewGame(): void {
+    public startNewGame(includeAccidentals: boolean): void {
         this.totalGuesses = 0;
         this.numCorrect = 0;
+        this.accidentalsEnabled = includeAccidentals;
     }
     
     public getNextQuestion(): IGameQuestion {
         let randomNote;
         do {
-            randomNote = getRandomChromaticNote();
+            randomNote = getRandomChromaticNote(this.accidentalsEnabled);
         } while (this.lastRandomNote === randomNote); // make sure not to ask the same question twice in a row
         this.lastRandomNote = randomNote; 
 
