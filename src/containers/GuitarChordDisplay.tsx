@@ -3,7 +3,7 @@ import * as React from "react";
 import { testFingering1 } from "../music/guitar/Fingering";
 import { standardGuitarTuning } from "src/music/Music";
 
-import Fretboard from "src/components/guitar/Fretboard";
+import Fretboard from "src/components/guitar/fretboard/Fretboard";
 
 export interface Props {}
 

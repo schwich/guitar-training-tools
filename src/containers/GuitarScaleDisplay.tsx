@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import Fretboard from "../components/guitar/Fretboard";
+import Fretboard from "../components/guitar/fretboard/Fretboard";
 
 import { generateFingeringFromKeyAndScalePattern } from "../music/guitar/Fingering";
 import {
